@@ -3,18 +3,22 @@ var right = keyboard_check(ord("D"));
 var left = keyboard_check(ord("A"));
 var up = keyboard_check(ord("W"));
 var down = keyboard_check(ord("S"));
+var jump = keyboard_check(vk_space);
 
 // Direcao do personagem de acordo com a tecla pressionada
 move_direction = (right - left);
 x_speed = move_direction * move_speed;
+check_on_ground();
 limit_y_speed();
 
 if(place_meeting(x + x_speed, y, obj_ground)) {
     var inst = collision_line(bbox_left + x_speed, y-10, bbox_right + x_speed, y-10, obj_ground, false, true);
     if (inst != noone) {
+		var dist_x = 0;
         if (x_speed > 0) {
             dist_x = inst.bbox_left - bbox_right;
-        } else {
+        } 
+		else {
             dist_x = inst.bbox_right - bbox_left;
         }
         x += dist_x;
@@ -23,6 +27,21 @@ if(place_meeting(x + x_speed, y, obj_ground)) {
 }
 x += x_speed;
 
+if(place_meeting(x, y + y_speed, obj_ground)){
+	var inst = collision_line(x, bbox_top + y_speed, x, y + y_speed, obj_ground, false, true);
+	if(inst != noone){
+		var dist_y = 0;
+		if(y_speed > 0){
+			dist_y = inst.bbox_top - bbox_bottom;
+		}
+		else if(y_speed < 0){
+			dist_y = inst.bbox_bottom - bbox_top;
+		}
+		y += dist_y;
+		y_speed = 0;
+	}
+}
+y += y_speed;
 
 
 /// DEBUG
@@ -30,10 +49,17 @@ debug_y = bbox_bottom;
 debug_x = bbox_right - (sprite_width / 2);
 debug_width = view_wport;
 
-
-
-
-
 function limit_y_speed(){
-	y_speed = min(y_speed + grav, max_grav);
+	if(!on_ground){
+		y_speed = min(y_speed + grav, max_grav);
+	}
+}
+
+function check_on_ground(){
+	if(place_meeting(x, y + 1, obj_ground) and y_speed >= 0){
+		on_ground = true;
+	}
+	else{
+		on_ground = false;
+	}
 }
