@@ -24,7 +24,7 @@ else{
 	jump_buffered = false;
 }
 // Buffer do pulo, caso esteja no chão o player pulará novamente.
-if(jump_buffered){
+if(jump_buffered and on_ground){
 	jump_hold_timer = jump_hold_frames;
 }
 // Cortar o pulo caso o botão não esteja pressionado.
@@ -45,7 +45,10 @@ check_on_ground();
 limit_y_speed();
 
 if(place_meeting(x + x_speed, y, obj_ground)) {
-    var inst = collision_rectangle(bbox_left + x_speed, bbox_top, bbox_right + x_speed, bbox_bottom, obj_ground, false, true);
+	var is_precision = false; var is_notme = true;
+	var _x1 = min(bbox_left, bbox_left + x_speed);
+	var _x2 = max(bbox_right, bbox_right + x_speed);
+    var inst = collision_rectangle(_x1, bbox_top, _x2, bbox_bottom, obj_ground, is_precision, is_notme);
     if (inst != noone) {
 		var dist_x = 0;
         if (x_speed > 0) {
@@ -61,7 +64,10 @@ if(place_meeting(x + x_speed, y, obj_ground)) {
 x += x_speed;
 
 if(place_meeting(x, y + y_speed, obj_ground)){
-	var inst = collision_rectangle(bbox_left, bbox_top + y_speed, bbox_right, bbox_bottom + y_speed, obj_ground, false, true);
+	var is_precision = false; var is_notme = true;
+	var _y1 = min(bbox_top, bbox_top + y_speed);
+	var _y2 = max(bbox_bottom, bbox_bottom + y_speed);
+	var inst = collision_rectangle(bbox_left, _y1, bbox_right, _y2, obj_ground, is_precision, is_notme);
 	if(inst != noone){
 		var dist_y = 0;
 		if(y_speed > 0){
@@ -89,7 +95,8 @@ function limit_y_speed(){
 }
 
 function check_on_ground(){
-	if(place_meeting(x, y + 1, obj_ground) and y_speed >= 0){
+	var y_check = 1;
+	if(place_meeting(x, y + y_check, obj_ground) and y_speed >= 0){
 		on_ground = true;
 	}
 	else{
