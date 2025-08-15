@@ -4,15 +4,48 @@ var left = keyboard_check(ord("A"));
 var up = keyboard_check(ord("W"));
 var down = keyboard_check(ord("S"));
 var jump = keyboard_check(vk_space);
+var jump_pressed = keyboard_check_pressed(vk_space);
 
 // Direcao do personagem de acordo com a tecla pressionada
 move_direction = (right - left);
 x_speed = move_direction * move_speed;
+
+#region // Pulo player --- Fazer uma função no create.
+
+// Caso o player pule, terá um tempo para armazenar um próximo input do pulo.
+if(jump_pressed){
+	jump_buffer_timer = jump_buffer_frames_max;
+}
+if(jump_buffer_timer > 0){
+	jump_buffered = true;
+	jump_buffer_timer--;
+}
+else{
+	jump_buffered = false;
+}
+// Buffer do pulo, caso esteja no chão o player pulará novamente.
+if(jump_buffered){
+	jump_hold_timer = jump_hold_frames;
+}
+// Cortar o pulo caso o botão não esteja pressionado.
+if(!jump){
+	jump_hold_timer = 0;
+}
+else if(jump_hold_timer > 0){
+	y_speed = jump_speed;
+	jump_hold_timer--;
+	// Parar o pulo caso o player colida com um objeto.
+	if(place_meeting(x, y + y_speed, obj_ground)){
+		jump_hold_timer = 0;
+	}
+}
+#endregion
+
 check_on_ground();
 limit_y_speed();
 
 if(place_meeting(x + x_speed, y, obj_ground)) {
-    var inst = collision_line(bbox_left + x_speed, y-10, bbox_right + x_speed, y-10, obj_ground, false, true);
+    var inst = collision_rectangle(bbox_left + x_speed, bbox_top, bbox_right + x_speed, bbox_bottom, obj_ground, false, true);
     if (inst != noone) {
 		var dist_x = 0;
         if (x_speed > 0) {
@@ -28,7 +61,7 @@ if(place_meeting(x + x_speed, y, obj_ground)) {
 x += x_speed;
 
 if(place_meeting(x, y + y_speed, obj_ground)){
-	var inst = collision_line(x, bbox_top + y_speed, x, y + y_speed, obj_ground, false, true);
+	var inst = collision_rectangle(bbox_left, bbox_top + y_speed, bbox_right, bbox_bottom + y_speed, obj_ground, false, true);
 	if(inst != noone){
 		var dist_y = 0;
 		if(y_speed > 0){
