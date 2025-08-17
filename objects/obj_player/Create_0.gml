@@ -1,9 +1,10 @@
 /// @description Insert description here
 // You can write your code in this editor
 move_direction = 0;
-move_speed = 3.35;
+move_speed = 3.125;
 x_speed = 0;
 y_speed = 0;
+sub_pixel = 0.5;
 
 // Variáveis de gravidade
 grav = 0.275;

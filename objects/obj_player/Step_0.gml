@@ -45,42 +45,33 @@ check_on_ground();
 limit_y_speed();
 
 if(place_meeting(x + x_speed, y, obj_ground)) {
-	var is_precision = false; var is_notme = true;
-	var _x1 = min(bbox_left, bbox_left + x_speed);
-	var _x2 = max(bbox_right, bbox_right + x_speed);
-    var inst = collision_rectangle(_x1, bbox_top, _x2, bbox_bottom, obj_ground, is_precision, is_notme);
-    if (inst != noone) {
-		var dist_x = 0;
-        if (x_speed > 0) {
-            dist_x = inst.bbox_left - bbox_right;
-        } 
-		else {
-            dist_x = inst.bbox_right - bbox_left;
-        }
-        x += dist_x;
-        x_speed = 0;
-    }
+	var pixel_check = sub_pixel * sign(x_speed);
+	// Caso esteja colidindo com um slope
+	if(!place_meeting(x + x_speed, y - abs(x_speed) - sub_pixel, obj_ground)){
+		var y_increment = 1;
+		while(place_meeting(x + x_speed, y, obj_ground)){
+			y -= y_increment;
+		}
+	}
+	else{
+		while(!place_meeting(x + pixel_check, y, obj_ground)){
+			x += pixel_check;
+		}
+		x_speed = 0;
+	}
 }
 x += x_speed;
 
 if(place_meeting(x, y + y_speed, obj_ground)){
-	var is_precision = false; var is_notme = true;
-	var _y1 = min(bbox_top, bbox_top + y_speed);
-	var _y2 = max(bbox_bottom, bbox_bottom + y_speed);
-	var inst = collision_rectangle(bbox_left, _y1, bbox_right, _y2, obj_ground, is_precision, is_notme);
-	if(inst != noone){
-		var dist_y = 0;
-		if(y_speed > 0){
-			dist_y = inst.bbox_top - bbox_bottom;
-		}
-		else if(y_speed < 0){
-			dist_y = inst.bbox_bottom - bbox_top;
-		}
-		y += dist_y;
-		y_speed = 0;
+	var pixel_check = sub_pixel * sign(y_speed);
+	while(!place_meeting(x, y + pixel_check, obj_ground)){
+		y += pixel_check;
 	}
+	y = round(y);
+	y_speed = 0;
 }
 y += y_speed;
+
 
 
 /// DEBUG
