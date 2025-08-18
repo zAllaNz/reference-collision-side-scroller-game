@@ -40,14 +40,15 @@ else if(jump_hold_timer > 0){
 	}
 }
 #endregion
-
+//show_debug_message("1:" + string(y_speed));
 check_on_ground();
 limit_y_speed();
+//show_debug_message("2:" + string(y_speed));
 
 if(place_meeting(x + x_speed, y, obj_ground)) {
 	var pixel_check = sub_pixel * sign(x_speed);
 	// Caso esteja colidindo com um slope
-	if(!place_meeting(x + x_speed, y - abs(x_speed) - sub_pixel, obj_ground)){
+	if(!place_meeting(x + x_speed, y - abs(x_speed) - 1, obj_ground)){
 		var y_increment = 1;
 		while(place_meeting(x + x_speed, y, obj_ground)){
 			y -= y_increment;
@@ -60,6 +61,14 @@ if(place_meeting(x + x_speed, y, obj_ground)) {
 		x_speed = 0;
 	}
 }
+
+if(!place_meeting(x + x_speed, y + 1, obj_ground) and place_meeting(x + x_speed, y + abs(x_speed) + 1, obj_ground) and y_speed >= 0){
+	show_debug_message("aq");
+	while(!place_meeting(x + x_speed, y + sub_pixel, obj_ground)){
+		y += sub_pixel;
+	}
+}
+
 x += x_speed;
 
 if(place_meeting(x, y + y_speed, obj_ground)){
