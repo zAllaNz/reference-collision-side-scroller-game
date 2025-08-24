@@ -1,10 +1,8 @@
 // Inputs do teclado
-var right = keyboard_check(ord("D"));
-var left = keyboard_check(ord("A"));
-var up = keyboard_check(ord("W"));
-var down = keyboard_check(ord("S"));
-var jump = keyboard_check(vk_space);
-var jump_pressed = keyboard_check_pressed(vk_space);
+var right = keyboard_check(ord("D")) or gamepad_button_check(0, gp_padr);
+var left = keyboard_check(ord("A")) or gamepad_button_check(0, gp_padl);
+var jump = keyboard_check(vk_space) or gamepad_button_check(0, gp_face1);
+var jump_pressed = keyboard_check_pressed(vk_space) or gamepad_button_check(0, gp_face1);
 
 // Direcao do personagem de acordo com a tecla pressionada
 move_direction = (right - left);
@@ -40,10 +38,10 @@ else if(jump_hold_timer > 0){
 	}
 }
 #endregion
-//show_debug_message("1:" + string(y_speed));
+
 check_on_ground();
 limit_y_speed();
-//show_debug_message("2:" + string(y_speed));
+
 
 if(place_meeting(x + x_speed, y, obj_ground)) {
 	var pixel_check = sub_pixel * sign(x_speed);
@@ -63,7 +61,6 @@ if(place_meeting(x + x_speed, y, obj_ground)) {
 }
 
 if(!place_meeting(x + x_speed, y + 1, obj_ground) and place_meeting(x + x_speed, y + abs(x_speed) + 1, obj_ground) and y_speed >= 0){
-	show_debug_message("aq");
 	while(!place_meeting(x + x_speed, y + sub_pixel, obj_ground)){
 		y += sub_pixel;
 	}

@@ -6,8 +6,8 @@
   "name":"obj_slope",
   "overriddenProperties":[],
   "parent":{
-    "name":"Objects",
-    "path":"folders/Objects.yy",
+    "name":"Slopes",
+    "path":"folders/Objects/Slopes.yy",
   },
   "parentObjectId":{
     "name":"obj_ground",
@@ -31,8 +31,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_slope",
-    "path":"sprites/spr_slope/spr_slope.yy",
+    "name":"spr_slope_45",
+    "path":"sprites/spr_slope_45/spr_slope_45.yy",
   },
   "spriteMaskId":null,
   "visible":true,
