@@ -19,6 +19,9 @@ jump_buffered = false;
 jump_hold_timer = 0;
 jump_hold_frames = 10;
 
+// Variáveis de colisão
+//list_instances = ds_list_create();
+
 // Debug
 debug_y = bbox_bottom;
 debug_x = bbox_right - (sprite_width / 2);

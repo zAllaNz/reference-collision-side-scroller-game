@@ -1,9 +1,9 @@
 {
   "$GMObject":"",
-  "%Name":"obj_ground",
+  "%Name":"obj_semisolid",
   "eventList":[],
   "managed":true,
-  "name":"obj_ground",
+  "name":"obj_semisolid",
   "overriddenProperties":[],
   "parent":{
     "name":"Platforms",
@@ -31,8 +31,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_ground",
-    "path":"sprites/spr_ground/spr_ground.yy",
+    "name":"spr_semisolid",
+    "path":"sprites/spr_semisolid/spr_semisolid.yy",
   },
   "spriteMaskId":null,
   "visible":true,

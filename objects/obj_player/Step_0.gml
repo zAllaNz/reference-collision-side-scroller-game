@@ -43,7 +43,8 @@ check_on_ground();
 limit_y_speed();
 
 
-if(place_meeting(x + x_speed, y, obj_ground)) {
+if(place_meeting(x + x_speed, y, obj_platform_parent)) {
+	show_debug_message("aq");
 	var pixel_check = sub_pixel * sign(x_speed);
 	// Caso esteja colidindo com um slope
 	if(!place_meeting(x + x_speed, y - abs(x_speed) - 1, obj_ground)){
@@ -60,12 +61,12 @@ if(place_meeting(x + x_speed, y, obj_ground)) {
 	}
 }
 
-if(!place_meeting(x + x_speed, y + 1, obj_ground) and place_meeting(x + x_speed, y + abs(x_speed) + 1, obj_ground) and y_speed >= 0){
+if(!place_meeting(x + x_speed, y + 1, obj_ground) and 
+	place_meeting(x + x_speed, y + abs(x_speed) + 1, obj_ground) and y_speed >= 0){
 	while(!place_meeting(x + x_speed, y + sub_pixel, obj_ground)){
 		y += sub_pixel;
 	}
 }
-
 x += x_speed;
 
 if(place_meeting(x, y + y_speed, obj_ground)){
@@ -78,6 +79,19 @@ if(place_meeting(x, y + y_speed, obj_ground)){
 }
 y += y_speed;
 
+var floor_plat = noone;
+var list_obj = array_create(0);
+array_push(list_obj, obj_platform_parent);
+var clamp_yspeed = max(0, y_speed);
+var list_inst = ds_list_create();
+var is_ordered = false;
+var list_inst_size = instance_place_list(x, y + 1 + clamp_yspeed + max_grav, list_obj, list_inst, is_ordered);
+show_debug_message_list(list_inst);
+for(var i = 0; i < list_inst_size; i++){
+	var inst_obj = list_inst[| i];
+	show_debug_message(inst_obj);
+}
+ds_list_clear(list_inst);
 
 
 /// DEBUG
@@ -99,4 +113,15 @@ function check_on_ground(){
 	else{
 		on_ground = false;
 	}
+}
+
+function show_debug_message_list(list){
+	var txt = "[";
+	var len = ds_list_size(list);
+	for(i = 0; i < len; i++){
+		txt += string(ds_list_find_value(list, i));
+	    if (i < len - 1) txt += ", ";
+	}
+	txt += "]";
+	show_debug_message(txt);
 }
