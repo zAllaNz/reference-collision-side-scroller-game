@@ -44,7 +44,6 @@ limit_y_speed();
 
 
 if(place_meeting(x + x_speed, y, obj_platform_parent)) {
-	show_debug_message("aq");
 	var pixel_check = sub_pixel * sign(x_speed);
 	// Caso esteja colidindo com um slope
 	if(!place_meeting(x + x_speed, y - abs(x_speed) - 1, obj_ground)){
@@ -79,9 +78,11 @@ if(place_meeting(x, y + y_speed, obj_ground)){
 }
 y += y_speed;
 
+/// TODO: talvez seja melhor inicializar essas variáveis no create do objeto (variáveis desse bloco)
 var floor_plat = noone;
 var list_obj = array_create(0);
 array_push(list_obj, obj_platform_parent);
+
 var clamp_yspeed = max(0, y_speed);
 var list_inst = ds_list_create();
 var is_ordered = false;
@@ -91,7 +92,8 @@ for(var i = 0; i < list_inst_size; i++){
 	var inst_obj = list_inst[| i];
 	show_debug_message(inst_obj);
 }
-ds_list_clear(list_inst);
+ds_list_destroy(list_inst);
+
 
 
 /// DEBUG
@@ -99,6 +101,8 @@ debug_y = bbox_bottom;
 debug_x = bbox_right - (sprite_width / 2);
 debug_width = view_wport;
 
+
+/// Função para limitar o Y Speed do objeto caso ele não esteja em contado com o chão.
 function limit_y_speed(){
 	if(!on_ground){
 		y_speed = min(y_speed + grav, max_grav);
