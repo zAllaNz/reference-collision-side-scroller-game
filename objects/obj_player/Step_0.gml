@@ -78,22 +78,37 @@ if(place_meeting(x, y + y_speed, obj_ground)){
 }
 y += y_speed;
 
-/// TODO: talvez seja melhor inicializar essas variáveis no create do objeto (variáveis desse bloco)
-var floor_plat = noone;
-var list_obj = array_create(0);
-array_push(list_obj, obj_platform_parent);
-
 var clamp_yspeed = max(0, y_speed);
 var list_inst = ds_list_create();
 var is_ordered = false;
 var list_inst_size = instance_place_list(x, y + 1 + clamp_yspeed + max_grav, list_obj, list_inst, is_ordered);
 show_debug_message_list(list_inst);
+
+
 for(var i = 0; i < list_inst_size; i++){
 	var inst_obj = list_inst[| i];
-	show_debug_message(inst_obj);
+	//show_debug_message(object_get_name(inst_obj.object_index));
+	
+	// Se for Semisólido (One-Way)
+    if (object_is_ancestor(inst_obj.object_index, obj_semisolid) or inst_obj.object_index == obj_semisolid) { 
+        // Se estivermos caindo e o bbox_bottom estiver acima do topo da plataforma
+        if (y_speed >= 0 and bbox_bottom <= inst_obj.bbox_top) {
+            if (!instance_exists(floor_plat) or inst_obj.bbox_top < floor_plat.bbox_top) {
+                floor_plat = inst_obj;
+            }
+        }
+    }
+    // Se for Sólido (Ground/Slopes)
+    else {
+        floor_plat = inst_obj;
+        
+        break; 
+    }
 }
 ds_list_destroy(list_inst);
 
+if(instance_exists(floor_plat)){show_debug_message(object_get_name(floor_plat.object_index));}
+if(instance_exists(floor_plat) and object_get_name(floor_plat.object_index) == "obj_semisolid"){show_message("aq");}
 
 
 /// DEBUG
