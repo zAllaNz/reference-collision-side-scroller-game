@@ -107,8 +107,14 @@ for(var i = 0; i < list_inst_size; i++){
 }
 ds_list_destroy(list_inst);
 
-if(instance_exists(floor_plat)){show_debug_message(object_get_name(floor_plat.object_index));}
-if(instance_exists(floor_plat) and object_get_name(floor_plat.object_index) == "obj_semisolid"){show_message("aq");}
+//if(instance_exists(floor_plat) and object_get_name(floor_plat.object_index) == "obj_semisolid"){show_message("aq");}
+
+// Checando se o player está colidindo com alguma plataforma
+if(instance_exists(floor_plat) and !place_meeting(x, y + max_grav, floor_plat)){
+	floor_plat = noone;
+}
+
+
 
 
 /// DEBUG
