@@ -22,7 +22,7 @@ jump_hold_frames = 10;
 // Variáveis de colisão
 floor_plat = noone;
 list_obj = array_create(0);
-array_push(list_obj, obj_platform_parent);
+array_push(list_obj, obj_ground, obj_semisolid);
 
 // Debug
 debug_y = bbox_bottom;

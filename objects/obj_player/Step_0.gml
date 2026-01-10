@@ -1,3 +1,4 @@
+
 // Inputs do teclado
 var right = keyboard_check(ord("D")) or gamepad_button_check(0, gp_padr);
 var left = keyboard_check(ord("A")) or gamepad_button_check(0, gp_padl);
@@ -42,8 +43,7 @@ else if(jump_hold_timer > 0){
 check_on_ground();
 limit_y_speed();
 
-
-if(place_meeting(x + x_speed, y, obj_platform_parent)) {
+if(place_meeting(x + x_speed, y, obj_ground)) {
 	var pixel_check = sub_pixel * sign(x_speed);
 	// Caso esteja colidindo com um slope
 	if(!place_meeting(x + x_speed, y - abs(x_speed) - 1, obj_ground)){
@@ -68,6 +68,7 @@ if(!place_meeting(x + x_speed, y + 1, obj_ground) and
 }
 x += x_speed;
 
+/*
 if(place_meeting(x, y + y_speed, obj_ground)){
 	var pixel_check = sub_pixel * sign(y_speed);
 	while(!place_meeting(x, y + pixel_check, obj_ground)){
@@ -77,42 +78,68 @@ if(place_meeting(x, y + y_speed, obj_ground)){
 	y_speed = 0;
 }
 y += y_speed;
+*/
 
 var clamp_yspeed = max(0, y_speed);
 var list_inst = ds_list_create();
 var is_ordered = false;
 var list_inst_size = instance_place_list(x, y + 1 + clamp_yspeed + max_grav, list_obj, list_inst, is_ordered);
-show_debug_message_list(list_inst);
-
+//show_debug_message_list(list_inst);
+//if(place_meeting(x, y, obj_ground)){show_message(place_meeting(x, y, obj_ground))};
 
 for(var i = 0; i < list_inst_size; i++){
 	var inst_obj = list_inst[| i];
 	//show_debug_message(object_get_name(inst_obj.object_index));
-	
-	// Se for Semisólido (One-Way)
-    if (object_is_ancestor(inst_obj.object_index, obj_semisolid) or inst_obj.object_index == obj_semisolid) { 
-        // Se estivermos caindo e o bbox_bottom estiver acima do topo da plataforma
-        if (y_speed >= 0 and bbox_bottom <= inst_obj.bbox_top) {
-            if (!instance_exists(floor_plat) or inst_obj.bbox_top < floor_plat.bbox_top) {
-                floor_plat = inst_obj;
-            }
-        }
-    }
-    // Se for Sólido (Ground/Slopes)
-    else {
-        floor_plat = inst_obj;
+	if(y_speed >= 0){
+		// Se for Semisólido (One-Way)
+	    if (object_is_ancestor(inst_obj.object_index, obj_semisolid) or inst_obj.object_index == obj_semisolid) { 
+	        // Se estivermos caindo e o bbox_bottom estiver acima do topo da plataforma
+	        if (y_speed >= 0 and bbox_bottom <= inst_obj.bbox_top) {
+	            if (!instance_exists(floor_plat) or inst_obj.bbox_top < floor_plat.bbox_top) {
+	                floor_plat = inst_obj;
+	            }
+	        }
+	    }
+	    // Se for Sólido (Ground/Slopes)
+	    else{
+	        floor_plat = inst_obj;
         
-        break; 
-    }
+	        break; 
+	    }
+	}
 }
 ds_list_destroy(list_inst);
-
+//if(y_speed < 0){show_message(y_speed); show_message(floor_plat);}
 //if(instance_exists(floor_plat) and object_get_name(floor_plat.object_index) == "obj_semisolid"){show_message("aq");}
 
 // Checando se o player está colidindo com alguma plataforma
 if(instance_exists(floor_plat) and !place_meeting(x, y + max_grav, floor_plat)){
 	floor_plat = noone;
 }
+
+// Colisão vertical
+//if(instance_exists(floor_plat)){show_debug_message(object_get_name(floor_plat.object_index));}
+if(instance_exists(floor_plat)){ //floor_plat = obj_ground
+	var pixel_check = sub_pixel;
+	
+	// Enquanto não estou tocando em plataforma alguma
+	while(!place_meeting(x, y + pixel_check, floor_plat)){
+		y += pixel_check;
+	}
+	
+	y = floor(y);
+	y_speed = 0;
+}
+else if(!instance_exists(floor_plat)){
+	if(place_meeting(x, y + y_speed, obj_ground)){
+		var pixel_check = sub_pixel * sign(y_speed);
+		while(!place_meeting(x, y + pixel_check, obj_ground)){
+			y += pixel_check;
+		}
+		y_speed = 0;
+	}
+}
+y += y_speed;
 
 
 
@@ -121,7 +148,6 @@ if(instance_exists(floor_plat) and !place_meeting(x, y + max_grav, floor_plat)){
 debug_y = bbox_bottom;
 debug_x = bbox_right - (sprite_width / 2);
 debug_width = view_wport;
-
 
 /// Função para limitar o Y Speed do objeto caso ele não esteja em contado com o chão.
 function limit_y_speed(){
@@ -132,11 +158,12 @@ function limit_y_speed(){
 
 function check_on_ground(){
 	var y_check = 1;
-	if(place_meeting(x, y + y_check, obj_ground) and y_speed >= 0){
+	if(place_meeting(x, y + y_check, floor_plat) and y_speed >= 0){
 		on_ground = true;
 	}
 	else{
 		on_ground = false;
+		floor_plat = noone;
 	}
 }
 
