@@ -39,7 +39,10 @@
   },
   "name":"Collision reference side scroller game",
   "resources":[
+    {"id":{"name":"fnt_arial_12","path":"fonts/fnt_arial_12/fnt_arial_12.yy",},},
+    {"id":{"name":"fnt_arial_6","path":"fonts/fnt_arial_6/fnt_arial_6.yy",},},
     {"id":{"name":"obj_ground","path":"objects/obj_ground/obj_ground.yy",},},
+    {"id":{"name":"obj_platform_parent","path":"objects/obj_platform_parent/obj_platform_parent.yy",},},
     {"id":{"name":"obj_player","path":"objects/obj_player/obj_player.yy",},},
     {"id":{"name":"obj_semisolid","path":"objects/obj_semisolid/obj_semisolid.yy",},},
     {"id":{"name":"obj_slope_30_1","path":"objects/obj_slope_30_1/obj_slope_30_1.yy",},},

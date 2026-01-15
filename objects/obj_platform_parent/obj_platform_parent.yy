@@ -1,18 +1,18 @@
 {
   "$GMObject":"",
-  "%Name":"obj_semisolid",
-  "eventList":[],
+  "%Name":"obj_platform_parent",
+  "eventList":[
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+  ],
   "managed":true,
-  "name":"obj_semisolid",
+  "name":"obj_platform_parent",
   "overriddenProperties":[],
   "parent":{
     "name":"Platforms",
     "path":"folders/Objects/Platforms.yy",
   },
-  "parentObjectId":{
-    "name":"obj_platform_parent",
-    "path":"objects/obj_platform_parent/obj_platform_parent.yy",
-  },
+  "parentObjectId":null,
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
@@ -30,10 +30,7 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":{
-    "name":"spr_semisolid",
-    "path":"sprites/spr_semisolid/spr_semisolid.yy",
-  },
+  "spriteId":null,
   "spriteMaskId":null,
   "visible":true,
 }

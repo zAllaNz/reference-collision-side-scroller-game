@@ -43,6 +43,8 @@ else if(jump_hold_timer > 0){
 check_on_ground();
 limit_y_speed();
 
+//COLISÃO HORIZONTAL
+// TODO: Refazer a colisão horizontal do zero, está acontecendo muitos bugs.
 if(place_meeting(x + x_speed, y, obj_ground)) {
 	var pixel_check = sub_pixel * sign(x_speed);
 	// Caso esteja colidindo com um slope
@@ -62,13 +64,18 @@ if(place_meeting(x + x_speed, y, obj_ground)) {
 
 if(!place_meeting(x + x_speed, y + 1, obj_ground) and 
 	place_meeting(x + x_speed, y + abs(x_speed) + 1, obj_ground) and y_speed >= 0){
-	while(!place_meeting(x + x_speed, y + sub_pixel, obj_ground)){
-		y += sub_pixel;
+	var i = 0;
+	x = floor(x);
+	x_speed = floor(x_speed);
+	while(!place_meeting(x + x_speed, y + 1, obj_ground)){
+		y += 1;
 	}
 }
 x += x_speed;
 
-/*
+
+
+// COLISÃO VERTICAL
 if(place_meeting(x, y + y_speed, obj_ground)){
 	var pixel_check = sub_pixel * sign(y_speed);
 	while(!place_meeting(x, y + pixel_check, obj_ground)){
@@ -78,71 +85,38 @@ if(place_meeting(x, y + y_speed, obj_ground)){
 	y_speed = 0;
 }
 y += y_speed;
-*/
+
+
 
 var clamp_yspeed = max(0, y_speed);
 var list_inst = ds_list_create();
 var is_ordered = false;
 var list_inst_size = instance_place_list(x, y + 1 + clamp_yspeed + max_grav, list_obj, list_inst, is_ordered);
-//show_debug_message_list(list_inst);
-//if(place_meeting(x, y, obj_ground)){show_message(place_meeting(x, y, obj_ground))};
-
+show_debug_message_list(list_inst);
 for(var i = 0; i < list_inst_size; i++){
 	var inst_obj = list_inst[| i];
-	//show_debug_message(object_get_name(inst_obj.object_index));
+	var inst_name = inst_obj.object_index;
+	var pixel_check = 1;
+	
 	if(y_speed >= 0){
-		// Se for Semisólido (One-Way)
-	    if (object_is_ancestor(inst_obj.object_index, obj_semisolid) or inst_obj.object_index == obj_semisolid) { 
-	        // Se estivermos caindo e o bbox_bottom estiver acima do topo da plataforma
-	        if (y_speed >= 0 and bbox_bottom <= inst_obj.bbox_top) {
-	            if (!instance_exists(floor_plat) or inst_obj.bbox_top < floor_plat.bbox_top) {
-	                floor_plat = inst_obj;
-	            }
-	        }
-	    }
-	    // Se for Sólido (Ground/Slopes)
-	    else{
-	        floor_plat = inst_obj;
-        
-	        break; 
-	    }
+		// Só estou colidindo com um único objeto, então esse objeto será a floor_plat
+		if(i + 1 == list_inst_size and i == 0){
+			floor_plat = inst_obj;
+		}
+		// Se minha instância é da classe obj_ground
+		if(inst_name == obj_ground){
+			if(place_meeting(x, y + pixel_check, inst_obj)){
+				show_debug_message("estou na obj_ground");
+				floor_plat = inst_obj;
+			}
+		}
 	}
 }
 ds_list_destroy(list_inst);
-//if(y_speed < 0){show_message(y_speed); show_message(floor_plat);}
-//if(instance_exists(floor_plat) and object_get_name(floor_plat.object_index) == "obj_semisolid"){show_message("aq");}
 
-// Checando se o player está colidindo com alguma plataforma
-if(instance_exists(floor_plat) and !place_meeting(x, y + max_grav, floor_plat)){
+if(instance_exists(floor_plat) and !on_ground){
 	floor_plat = noone;
 }
-
-// Colisão vertical
-//if(instance_exists(floor_plat)){show_debug_message(object_get_name(floor_plat.object_index));}
-if(instance_exists(floor_plat)){ //floor_plat = obj_ground
-	var pixel_check = sub_pixel;
-	
-	// Enquanto não estou tocando em plataforma alguma
-	while(!place_meeting(x, y + pixel_check, floor_plat)){
-		y += pixel_check;
-	}
-	
-	y = floor(y);
-	y_speed = 0;
-}
-else if(!instance_exists(floor_plat)){
-	if(place_meeting(x, y + y_speed, obj_ground)){
-		var pixel_check = sub_pixel * sign(y_speed);
-		while(!place_meeting(x, y + pixel_check, obj_ground)){
-			y += pixel_check;
-		}
-		y_speed = 0;
-	}
-}
-y += y_speed;
-
-
-
 
 /// DEBUG
 debug_y = bbox_bottom;
@@ -156,14 +130,14 @@ function limit_y_speed(){
 	}
 }
 
+// TODO: arrumar função check_on_ground, precisa detectar as plataformas e slopes precisamente para resolver a variável "on_ground"
 function check_on_ground(){
 	var y_check = 1;
-	if(place_meeting(x, y + y_check, floor_plat) and y_speed >= 0){
+	if((place_meeting(x, y + y_check, obj_ground)) and y_speed >= 0){
 		on_ground = true;
 	}
 	else{
 		on_ground = false;
-		floor_plat = noone;
 	}
 }
 
