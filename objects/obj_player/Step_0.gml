@@ -8,6 +8,11 @@ var jump_pressed = keyboard_check_pressed(vk_space) or gamepad_button_check(0, g
 // Direcao do personagem de acordo com a tecla pressionada
 move_direction = (right - left);
 x_speed = move_direction * move_speed;
+var rest = frac(x_speed);
+var subpixel_increment = abs(rest);
+move_hspd = x_speed - rest;
+
+subpixel_accumulator(subpixel_increment);
 
 #region // Pulo player --- Fazer uma função no create.
 
@@ -43,8 +48,32 @@ else if(jump_hold_timer > 0){
 check_on_ground();
 limit_y_speed();
 
+show_debug_message(string(move_hspd) + " " + string(rest) + " subpixel: " + string(subpixel));
+
 //COLISÃO HORIZONTAL
 // TODO: Refazer a colisão horizontal do zero, está acontecendo muitos bugs.
+
+if(move_hspd != 0){
+	var pixel_check = sign(move_hspd);
+	if((place_meeting(x + sign(move_hspd), y, obj_ground) or place_meeting(x + sign(move_hspd) + pixel_check, y, obj_ground)) and !place_meeting(x + sign(move_hspd), y - 1, obj_ground)){
+		for(var i = 1; i <= abs(move_hspd); i++){
+			if(place_meeting(x + (sign(move_hspd) * i), y, obj_ground) and !place_meeting(x + sign(move_hspd), y - 1, obj_ground)){
+				y--;
+			}
+		}
+	}
+	
+	if(place_meeting(x + move_hspd + pixel_check, y, obj_ground)){
+		while(!place_meeting(x + pixel_check, y, obj_ground)){
+			x += pixel_check;
+		}
+		move_hspd = 0;
+	}
+}
+x += move_hspd;
+
+
+/*
 if(place_meeting(x + x_speed, y, obj_ground)) {
 	var pixel_check = sub_pixel * sign(x_speed);
 	// Caso esteja colidindo com um slope
@@ -75,9 +104,10 @@ x += x_speed;
 
 
 
+*/
 // COLISÃO VERTICAL
 if(place_meeting(x, y + y_speed, obj_ground)){
-	var pixel_check = sub_pixel * sign(y_speed);
+	var pixel_check = 1 * sign(y_speed);
 	while(!place_meeting(x, y + pixel_check, obj_ground)){
 		y += pixel_check;
 	}
@@ -87,12 +117,11 @@ if(place_meeting(x, y + y_speed, obj_ground)){
 y += y_speed;
 
 
-
 var clamp_yspeed = max(0, y_speed);
 var list_inst = ds_list_create();
 var is_ordered = false;
 var list_inst_size = instance_place_list(x, y + 1 + clamp_yspeed + max_grav, list_obj, list_inst, is_ordered);
-show_debug_message_list(list_inst);
+//show_debug_message_list(list_inst);
 for(var i = 0; i < list_inst_size; i++){
 	var inst_obj = list_inst[| i];
 	var inst_name = inst_obj.object_index;
@@ -106,7 +135,7 @@ for(var i = 0; i < list_inst_size; i++){
 		// Se minha instância é da classe obj_ground
 		if(inst_name == obj_ground){
 			if(place_meeting(x, y + pixel_check, inst_obj)){
-				show_debug_message("estou na obj_ground");
+				//show_debug_message("estou na obj_ground");
 				floor_plat = inst_obj;
 			}
 		}
@@ -127,6 +156,19 @@ debug_width = view_wport;
 function limit_y_speed(){
 	if(!on_ground){
 		y_speed = min(y_speed + grav, max_grav);
+	}
+}
+
+function subpixel_accumulator(subpixel_increment){
+	if(move_hspd != 0){
+		subpixel += subpixel_increment;
+	}
+	else{
+		subpixel = 0;
+	}
+	if(subpixel >= 1){
+		move_hspd += sign(x_speed);
+		subpixel--;
 	}
 }
 
