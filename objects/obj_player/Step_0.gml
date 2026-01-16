@@ -48,21 +48,29 @@ else if(jump_hold_timer > 0){
 check_on_ground();
 limit_y_speed();
 
-show_debug_message(string(move_hspd) + " " + string(rest) + " subpixel: " + string(subpixel));
+show_debug_message(string(move_hspd) + " " + string(rest) + " subpixel: " + string(subpixel) + "y: " + string(y_speed));
 
 //COLISÃO HORIZONTAL
-// TODO: Refazer a colisão horizontal do zero, está acontecendo muitos bugs.
-
 if(move_hspd != 0){
 	var pixel_check = sign(move_hspd);
-	if((place_meeting(x + sign(move_hspd), y, obj_ground) or place_meeting(x + sign(move_hspd) + pixel_check, y, obj_ground)) and !place_meeting(x + sign(move_hspd), y - 1, obj_ground)){
+	var one_pixel = 1;
+	
+	//Subir a slope
+	if((place_meeting(x + sign(move_hspd), y, obj_ground) or place_meeting(x + sign(move_hspd) + pixel_check, y, obj_ground)) 
+	and !place_meeting(x + sign(move_hspd), y - one_pixel, obj_ground)){
 		for(var i = 1; i <= abs(move_hspd); i++){
 			if(place_meeting(x + (sign(move_hspd) * i), y, obj_ground) and !place_meeting(x + sign(move_hspd), y - 1, obj_ground)){
 				y--;
 			}
 		}
 	}
-	
+	//Descer a slope
+	else if(!place_meeting(x + move_hspd, y, obj_ground) and place_meeting(x + move_hspd, y + abs(move_hspd) + one_pixel, obj_ground) and y_speed >= 0){
+		while(!place_meeting(x + move_hspd, y + one_pixel, obj_ground)){
+			y++;
+		}
+	}
+	//Colidir caso haja alguma plataforma sólida.
 	if(place_meeting(x + move_hspd + pixel_check, y, obj_ground)){
 		while(!place_meeting(x + pixel_check, y, obj_ground)){
 			x += pixel_check;
@@ -72,6 +80,7 @@ if(move_hspd != 0){
 }
 x += move_hspd;
 
+//TODO: Refazer a colisão vertical.
 
 /*
 if(place_meeting(x + x_speed, y, obj_ground)) {
@@ -101,10 +110,11 @@ if(!place_meeting(x + x_speed, y + 1, obj_ground) and
 	}
 }
 x += x_speed;
-
-
-
 */
+
+
+
+/*
 // COLISÃO VERTICAL
 if(place_meeting(x, y + y_speed, obj_ground)){
 	var pixel_check = 1 * sign(y_speed);
@@ -115,6 +125,7 @@ if(place_meeting(x, y + y_speed, obj_ground)){
 	y_speed = 0;
 }
 y += y_speed;
+*/
 
 
 var clamp_yspeed = max(0, y_speed);
