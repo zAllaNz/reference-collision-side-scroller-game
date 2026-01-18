@@ -79,8 +79,7 @@ if(move_hspd != 0){
 }
 x += move_hspd;
 
-//TODO: Refazer a colisão vertical.
-
+//Colisão horizontal antiga
 /*
 if(place_meeting(x + x_speed, y, obj_ground)) {
 	var pixel_check = sub_pixel * sign(x_speed);
@@ -111,9 +110,6 @@ if(!place_meeting(x + x_speed, y + 1, obj_ground) and
 x += x_speed;
 */
 
-
-
-
 // COLISÃO VERTICAL
 /*
 if(place_meeting(x, y + y_speed, obj_ground)){
@@ -137,11 +133,11 @@ for(var i = 0; i < list_inst_size; i++){
 	var inst_name = inst_obj.object_index;
 	var one_pixel = 1;
 	if(y_speed >= 0){
-		//Quando há colisão com um único objeto, então esse objeto será a floor_plat
+		//Quando há colisão com um único objeto, então esse objeto será a floor_plat.
 		if(i + 1 == list_inst_size and i == 0){
 			floor_plat = inst_obj;
 		}
-		//Se minha instância é parent da classe ground, 
+		//Se minha instância é parent da classe slope ou for o slope, verificar se só tenho colisão com essa instância.
 		else if(object_is_ancestor(inst_name, obj_slope) or inst_name == obj_slope){
 			if(place_meeting(x, y + one_pixel, inst_obj)){
 				var aux_list = ds_list_create();
@@ -153,7 +149,7 @@ for(var i = 0; i < list_inst_size; i++){
 				ds_list_destroy(aux_list);
 			}
 		}
-		//Se minha instância é da classe obj_ground
+		//Se minha instância é da classe obj_ground.
 		else if(inst_name == obj_ground){
 			if(place_meeting(x, y + one_pixel, inst_obj)){
 				show_debug_message("estou na obj_ground");
@@ -164,9 +160,31 @@ for(var i = 0; i < list_inst_size; i++){
 }
 ds_list_destroy(list_inst);
 
-if(instance_exists(floor_plat) and !on_ground){
+if(instance_exists(floor_plat) and !place_meeting(x, y + max_grav, floor_plat)){
 	floor_plat = noone;
 }
+
+//COLISÃO VERTICAL
+//TODO: Adicionar subpixel accumulator para o y_speed também.
+if(instance_exists(floor_plat)){
+	var one_pixel = 1;
+	while(!place_meeting(x, y + one_pixel, floor_plat))
+	{
+		y += one_pixel;
+	}
+	y = floor(y);
+	y_speed = 0;
+}
+else{
+	if(place_meeting(x, y - abs(y_speed), obj_ground)){
+		var one_pixel = 1;
+		while(!place_meeting(x, y - one_pixel, obj_ground)){
+			y -= one_pixel
+		}
+		y_speed = 0;
+	}
+}
+y += y_speed;
 
 /// DEBUG
 debug_y = bbox_bottom;
@@ -196,11 +214,12 @@ function subpixel_accumulator(subpixel_increment){
 // TODO: arrumar função check_on_ground, precisa detectar as plataformas e slopes precisamente para resolver a variável "on_ground"
 function check_on_ground(){
 	var y_check = 1;
-	if((place_meeting(x, y + y_check, obj_ground)) and y_speed >= 0){
+	if((place_meeting(x, y + y_check, floor_plat)) and y_speed >= 0){
 		on_ground = true;
 	}
 	else{
 		on_ground = false;
+		floor_plat = noone;
 	}
 }
 
