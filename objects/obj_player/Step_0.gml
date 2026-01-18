@@ -48,8 +48,7 @@ else if(jump_hold_timer > 0){
 check_on_ground();
 limit_y_speed();
 
-show_debug_message(string(move_hspd) + " " + string(rest) + " subpixel: " + string(subpixel) + "y: " + string(y_speed));
-
+//show_debug_message(string(move_hspd) + " " + string(rest) + " subpixel: " + string(subpixel) + "y: " + string(y_speed));
 //COLISÃO HORIZONTAL
 if(move_hspd != 0){
 	var pixel_check = sign(move_hspd);
@@ -114,8 +113,9 @@ x += x_speed;
 
 
 
-/*
+
 // COLISÃO VERTICAL
+/*
 if(place_meeting(x, y + y_speed, obj_ground)){
 	var pixel_check = 1 * sign(y_speed);
 	while(!place_meeting(x, y + pixel_check, obj_ground)){
@@ -127,26 +127,36 @@ if(place_meeting(x, y + y_speed, obj_ground)){
 y += y_speed;
 */
 
-
 var clamp_yspeed = max(0, y_speed);
 var list_inst = ds_list_create();
 var is_ordered = false;
 var list_inst_size = instance_place_list(x, y + 1 + clamp_yspeed + max_grav, list_obj, list_inst, is_ordered);
-//show_debug_message_list(list_inst);
+show_debug_message_list(list_inst);
 for(var i = 0; i < list_inst_size; i++){
 	var inst_obj = list_inst[| i];
 	var inst_name = inst_obj.object_index;
-	var pixel_check = 1;
-	
+	var one_pixel = 1;
 	if(y_speed >= 0){
-		// Só estou colidindo com um único objeto, então esse objeto será a floor_plat
+		//Quando há colisão com um único objeto, então esse objeto será a floor_plat
 		if(i + 1 == list_inst_size and i == 0){
 			floor_plat = inst_obj;
 		}
-		// Se minha instância é da classe obj_ground
-		if(inst_name == obj_ground){
-			if(place_meeting(x, y + pixel_check, inst_obj)){
-				//show_debug_message("estou na obj_ground");
+		//Se minha instância é parent da classe ground, 
+		else if(object_is_ancestor(inst_name, obj_slope) or inst_name == obj_slope){
+			if(place_meeting(x, y + one_pixel, inst_obj)){
+				var aux_list = ds_list_create();
+				var aux_len = instance_place_list(x, y + one_pixel, list_obj, aux_list, false);
+				if(aux_len == 1){
+					show_debug_message("estou em alguma slope!!!");
+					floor_plat = inst_obj;
+				}
+				ds_list_destroy(aux_list);
+			}
+		}
+		//Se minha instância é da classe obj_ground
+		else if(inst_name == obj_ground){
+			if(place_meeting(x, y + one_pixel, inst_obj)){
+				show_debug_message("estou na obj_ground");
 				floor_plat = inst_obj;
 			}
 		}

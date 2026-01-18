@@ -10,8 +10,8 @@
     "path":"folders/Objects/Slopes.yy",
   },
   "parentObjectId":{
-    "name":"obj_ground",
-    "path":"objects/obj_ground/obj_ground.yy",
+    "name":"obj_slope",
+    "path":"objects/obj_slope/obj_slope.yy",
   },
   "persistent":false,
   "physicsAngularDamping":0.1,
