@@ -3,7 +3,9 @@
 move_direction = 0;
 move_speed = 3.125;
 move_hspd = 0;
-subpixel = 0;
+move_vspd = 0;
+subpixelx = 0;
+subpixely = 0;
 x_speed = 0;
 y_speed = 0;
 

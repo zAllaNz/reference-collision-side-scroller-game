@@ -8,11 +8,12 @@ var jump_pressed = keyboard_check_pressed(vk_space) or gamepad_button_check(0, g
 // Direcao do personagem de acordo com a tecla pressionada
 move_direction = (right - left);
 x_speed = move_direction * move_speed;
-var rest = frac(x_speed);
-var subpixel_increment = abs(rest);
-move_hspd = x_speed - rest;
+var xrest = frac(x_speed);
+var subpixelx_increment = abs(xrest);
+move_hspd = x_speed - xrest;
 
-subpixel_accumulator(subpixel_increment);
+
+
 
 #region // Pulo player --- Fazer uma função no create.
 
@@ -47,8 +48,26 @@ else if(jump_hold_timer > 0){
 
 check_on_ground();
 limit_y_speed();
+subpixel_accumulator(subpixelx_increment);
 
-//show_debug_message(string(move_hspd) + " " + string(rest) + " subpixel: " + string(subpixel) + "y: " + string(y_speed));
+// Subpixel em y, testando para saber se resolve os bugs
+var yrest = frac(y_speed);
+var subpixely_increment = abs(yrest);
+move_vspd = y_speed - yrest;
+
+if(move_vspd != 0){
+	subpixely += subpixely_increment;
+}
+else{
+	subpixely = 0;
+}
+if(subpixely >= 1){
+	move_vspd += sign(y_speed);
+	subpixely--;
+}
+
+show_debug_message(string(move_vspd) + " " + string(yrest) + " subpixel: " + string(subpixely) + " y: " + string(y_speed));
+//show_debug_message(string(move_hspd) + " " + string(xrest) + " subpixel: " + string(subpixelx) + "y: " + string(y_speed));
 //COLISÃO HORIZONTAL
 if(move_hspd != 0){
 	var pixel_check = sign(move_hspd);
@@ -64,7 +83,7 @@ if(move_hspd != 0){
 		}
 	}
 	//Descer a slope
-	else if(!place_meeting(x + move_hspd, y, obj_ground) and place_meeting(x + move_hspd, y + abs(move_hspd) + one_pixel, obj_ground) and y_speed >= 0){
+	else if(!place_meeting(x + move_hspd, y, obj_ground) and place_meeting(x + move_hspd, y + abs(move_hspd) + one_pixel, obj_ground) and move_vspd >= 0){
 		while(!place_meeting(x + move_hspd, y + one_pixel, obj_ground)){
 			y++;
 		}
@@ -123,7 +142,7 @@ if(place_meeting(x, y + y_speed, obj_ground)){
 y += y_speed;
 */
 
-var clamp_yspeed = max(0, y_speed);
+var clamp_yspeed = max(0, move_vspd);
 var list_inst = ds_list_create();
 var is_ordered = false;
 var list_inst_size = instance_place_list(x, y + 1 + clamp_yspeed + max_grav, list_obj, list_inst, is_ordered);
@@ -132,7 +151,7 @@ for(var i = 0; i < list_inst_size; i++){
 	var inst_obj = list_inst[| i];
 	var inst_name = inst_obj.object_index;
 	var one_pixel = 1;
-	if(y_speed >= 0){
+	if(move_vspd >= 0){
 		//Quando há colisão com um único objeto, então esse objeto será a floor_plat.
 		if(i + 1 == list_inst_size and i == 0){
 			floor_plat = inst_obj;
@@ -160,7 +179,7 @@ for(var i = 0; i < list_inst_size; i++){
 }
 ds_list_destroy(list_inst);
 
-if(instance_exists(floor_plat) and !place_meeting(x, y + max_grav, floor_plat)){
+if(instance_exists(floor_plat) and !place_meeting(x, y + move_vspd, floor_plat)){
 	floor_plat = noone;
 }
 
@@ -173,18 +192,19 @@ if(instance_exists(floor_plat)){
 		y += one_pixel;
 	}
 	y = floor(y);
+	move_vspd = 0;
 	y_speed = 0;
 }
 else{
-	if(place_meeting(x, y - abs(y_speed), obj_ground)){
+	if(place_meeting(x, y - abs(move_vspd), obj_ground)){
 		var one_pixel = 1;
 		while(!place_meeting(x, y - one_pixel, obj_ground)){
 			y -= one_pixel
 		}
-		y_speed = 0;
+		move_vspd = 0;
 	}
 }
-y += y_speed;
+y += move_vspd;
 
 /// DEBUG
 debug_y = bbox_bottom;
@@ -200,21 +220,21 @@ function limit_y_speed(){
 
 function subpixel_accumulator(subpixel_increment){
 	if(move_hspd != 0){
-		subpixel += subpixel_increment;
+		subpixelx += subpixel_increment;
 	}
 	else{
-		subpixel = 0;
+		subpixelx = 0;
 	}
-	if(subpixel >= 1){
+	if(subpixelx >= 1){
 		move_hspd += sign(x_speed);
-		subpixel--;
+		subpixelx--;
 	}
 }
 
 // TODO: arrumar função check_on_ground, precisa detectar as plataformas e slopes precisamente para resolver a variável "on_ground"
 function check_on_ground(){
 	var y_check = 1;
-	if((place_meeting(x, y + y_check, floor_plat)) and y_speed >= 0){
+	if((place_meeting(x, y + y_check, floor_plat)) and move_vspd >= 0){
 		on_ground = true;
 	}
 	else{
