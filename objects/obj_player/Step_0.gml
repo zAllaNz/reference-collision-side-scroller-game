@@ -40,7 +40,7 @@ else if(jump_hold_timer > 0){
 	y_speed = jump_speed;
 	jump_hold_timer--;
 	// Parar o pulo caso o player colida com um objeto.
-	if(place_meeting(x, y + y_speed, obj_ground)){
+	if(place_meeting(x, y + move_vspd, obj_ground)){
 		jump_hold_timer = 0;
 	}
 }
@@ -48,25 +48,15 @@ else if(jump_hold_timer > 0){
 
 check_on_ground();
 limit_y_speed();
-subpixel_accumulator(subpixelx_increment);
 
 // Subpixel em y, testando para saber se resolve os bugs
+// TODO: refinar a lógica de movimentação no eixo vertical. A lógica está um pouco bagunçada, pensar em como otimizar e remover algumas variáveis, como por exemplo "y_speed".
 var yrest = frac(y_speed);
 var subpixely_increment = abs(yrest);
 move_vspd = y_speed - yrest;
+subpixel_accumulator(subpixelx_increment, subpixely_increment);
 
-if(move_vspd != 0){
-	subpixely += subpixely_increment;
-}
-else{
-	subpixely = 0;
-}
-if(subpixely >= 1){
-	move_vspd += sign(y_speed);
-	subpixely--;
-}
-
-show_debug_message(string(move_vspd) + " " + string(yrest) + " subpixel: " + string(subpixely) + " y: " + string(y_speed));
+//show_debug_message(string(move_vspd) + " " + string(yrest) + " subpixel: " + string(subpixely) + " y: " + string(y_speed));
 //show_debug_message(string(move_hspd) + " " + string(xrest) + " subpixel: " + string(subpixelx) + "y: " + string(y_speed));
 //COLISÃO HORIZONTAL
 if(move_hspd != 0){
@@ -179,29 +169,28 @@ for(var i = 0; i < list_inst_size; i++){
 }
 ds_list_destroy(list_inst);
 
-if(instance_exists(floor_plat) and !place_meeting(x, y + move_vspd, floor_plat)){
+if(instance_exists(floor_plat) and !place_meeting(x, y + clamp_yspeed + move_vspd + 1, floor_plat) and move_speed >= 0){
 	floor_plat = noone;
 }
 
 //COLISÃO VERTICAL
-//TODO: Adicionar subpixel accumulator para o y_speed também.
 if(instance_exists(floor_plat)){
 	var one_pixel = 1;
 	while(!place_meeting(x, y + one_pixel, floor_plat))
 	{
 		y += one_pixel;
 	}
-	y = floor(y);
 	move_vspd = 0;
 	y_speed = 0;
 }
 else{
-	if(place_meeting(x, y - abs(move_vspd), obj_ground)){
-		var one_pixel = 1;
-		while(!place_meeting(x, y - one_pixel, obj_ground)){
-			y -= one_pixel
+	if(place_meeting(x, y + move_vspd, obj_ground)){
+		var pixel_check = sign(move_vspd);
+		while(!place_meeting(x, y + pixel_check, obj_ground)){
+			y += pixel_check
 		}
 		move_vspd = 0;
+		y_speed = 0;
 	}
 }
 y += move_vspd;
@@ -218,9 +207,10 @@ function limit_y_speed(){
 	}
 }
 
-function subpixel_accumulator(subpixel_increment){
+function subpixel_accumulator(x_increment, y_increment){
+	// Eixo horizontal
 	if(move_hspd != 0){
-		subpixelx += subpixel_increment;
+		subpixelx += x_increment;
 	}
 	else{
 		subpixelx = 0;
@@ -229,12 +219,24 @@ function subpixel_accumulator(subpixel_increment){
 		move_hspd += sign(x_speed);
 		subpixelx--;
 	}
+	// Eixo vertical
+	if(move_vspd != 0){
+		subpixely += y_increment;
+	}
+	else{
+		subpixely = 0;
+	}
+	if(subpixely >= 1){
+		move_vspd += sign(y_speed);
+		subpixely--;
+	}
 }
+
 
 // TODO: arrumar função check_on_ground, precisa detectar as plataformas e slopes precisamente para resolver a variável "on_ground"
 function check_on_ground(){
 	var y_check = 1;
-	if((place_meeting(x, y + y_check, floor_plat)) and move_vspd >= 0){
+	if(place_meeting(x, y + y_check, floor_plat) and move_vspd >= 0){
 		on_ground = true;
 	}
 	else{
