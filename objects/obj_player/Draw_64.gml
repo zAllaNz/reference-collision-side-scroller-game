@@ -1,5 +1,6 @@
 /// @description Insert description here
 // You can write your code in this editor
+
 draw_set_font(fnt_arial_12);
 draw_text(0, 0, "x:" + string(debug_x));
 draw_text(0, 80, "move_vspd:" + string(move_vspd));

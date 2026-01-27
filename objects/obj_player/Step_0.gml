@@ -12,7 +12,7 @@ var xrest = frac(x_speed);
 var subpixelx_increment = abs(xrest);
 move_hspd = x_speed - xrest;
 
-
+// TODO: Arrumar o problema de colisão no eixo horizontal causado pelo trecho de código da slope, ele está fazendo o player dar um pulo.
 
 
 #region // Pulo player --- Fazer uma função no create.
@@ -63,11 +63,12 @@ if(move_hspd != 0){
 	var pixel_check = sign(move_hspd);
 	var one_pixel = 1;
 	
+	/*
 	//Subir a slope
-	if((place_meeting(x + sign(move_hspd), y, obj_ground) or place_meeting(x + sign(move_hspd) + pixel_check, y, obj_ground)) 
-	and !place_meeting(x + sign(move_hspd), y - one_pixel, obj_ground)){
+	if((place_meeting(x + sign(move_hspd), y, obj_slope) or place_meeting(x + sign(move_hspd) + pixel_check, y, obj_slope)) 
+	and !place_meeting(x + sign(move_hspd), y - one_pixel, obj_slope)){
 		for(var i = 1; i <= abs(move_hspd); i++){
-			if(place_meeting(x + (sign(move_hspd) * i), y, obj_ground) and !place_meeting(x + sign(move_hspd), y - 1, obj_ground)){
+			if(place_meeting(x + (sign(move_hspd) * i), y, obj_slope) and !place_meeting(x + sign(move_hspd), y - 1, obj_slope)){
 				y--;
 			}
 		}
@@ -76,6 +77,12 @@ if(move_hspd != 0){
 	else if(!place_meeting(x + move_hspd, y, obj_ground) and place_meeting(x + move_hspd, y + abs(move_hspd) + one_pixel, obj_ground) and move_vspd >= 0){
 		while(!place_meeting(x + move_hspd, y + one_pixel, obj_ground)){
 			y++;
+		}
+	}
+	*/
+	if(place_meeting(x + move_hspd, y, obj_slope)){
+		while(place_meeting(x + move_hspd, y, obj_slope)){
+			y--;
 		}
 	}
 	//Colidir caso haja alguma plataforma sólida.
@@ -136,7 +143,7 @@ var clamp_yspeed = max(0, move_vspd);
 var list_inst = ds_list_create();
 var is_ordered = false;
 var list_inst_size = instance_place_list(x, y + 1 + clamp_yspeed + max_grav, list_obj, list_inst, is_ordered);
-show_debug_message_list(list_inst);
+//show_debug_message_list(list_inst);
 for(var i = 0; i < list_inst_size; i++){
 	var inst_obj = list_inst[| i];
 	var inst_name = inst_obj.object_index;
@@ -152,7 +159,7 @@ for(var i = 0; i < list_inst_size; i++){
 				var aux_list = ds_list_create();
 				var aux_len = instance_place_list(x, y + one_pixel, list_obj, aux_list, false);
 				if(aux_len == 1){
-					show_debug_message("estou em alguma slope!!!");
+					//show_debug_message("estou em alguma slope!!!");
 					floor_plat = inst_obj;
 				}
 				ds_list_destroy(aux_list);
@@ -161,7 +168,7 @@ for(var i = 0; i < list_inst_size; i++){
 		//Se minha instância é da classe obj_ground.
 		else if(inst_name == obj_ground){
 			if(place_meeting(x, y + one_pixel, inst_obj)){
-				show_debug_message("estou na obj_ground");
+				//show_debug_message("estou na obj_ground");
 				floor_plat = inst_obj;
 			}
 		}
