@@ -62,27 +62,16 @@ subpixel_accumulator(subpixelx_increment, subpixely_increment);
 if(move_hspd != 0){
 	var pixel_check = sign(move_hspd);
 	var one_pixel = 1;
-	
-	/*
 	//Subir a slope
-	if((place_meeting(x + sign(move_hspd), y, obj_slope) or place_meeting(x + sign(move_hspd) + pixel_check, y, obj_slope)) 
-	and !place_meeting(x + sign(move_hspd), y - one_pixel, obj_slope)){
-		for(var i = 1; i <= abs(move_hspd); i++){
-			if(place_meeting(x + (sign(move_hspd) * i), y, obj_slope) and !place_meeting(x + sign(move_hspd), y - 1, obj_slope)){
-				y--;
-			}
+	if(place_meeting(x + move_hspd, y, obj_slope) and !place_meeting(x + move_hspd, y - abs(move_hspd), obj_ground)){
+		while(place_meeting(x + move_hspd, y, obj_slope) and !place_meeting(x + sign(move_hspd), y - 1, obj_ground)){
+			y--;
 		}
 	}
 	//Descer a slope
-	else if(!place_meeting(x + move_hspd, y, obj_ground) and place_meeting(x + move_hspd, y + abs(move_hspd) + one_pixel, obj_ground) and move_vspd >= 0){
+	else if(place_meeting(x + move_hspd, y + abs(move_hspd) + one_pixel, obj_ground)){
 		while(!place_meeting(x + move_hspd, y + one_pixel, obj_ground)){
 			y++;
-		}
-	}
-	*/
-	if(place_meeting(x + move_hspd, y, obj_slope)){
-		while(place_meeting(x + move_hspd, y, obj_slope)){
-			y--;
 		}
 	}
 	//Colidir caso haja alguma plataforma sólida.
