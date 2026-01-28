@@ -11,9 +11,7 @@ x_speed = move_direction * move_speed;
 var xrest = frac(x_speed);
 var subpixelx_increment = abs(xrest);
 move_hspd = x_speed - xrest;
-
 // TODO: Arrumar o problema de colisão no eixo horizontal causado pelo trecho de código da slope, ele está fazendo o player dar um pulo.
-
 
 #region // Pulo player --- Fazer uma função no create.
 
@@ -62,9 +60,23 @@ subpixel_accumulator(subpixelx_increment, subpixely_increment);
 if(move_hspd != 0){
 	var pixel_check = sign(move_hspd);
 	var one_pixel = 1;
+	
+	//Subir a semisolid slope
+	if(place_meeting(x + move_hspd, y, obj_semisolid_slope) and !place_meeting(x + move_hspd, y - abs(move_hspd), obj_semisolid_slope)){
+		while(place_meeting(x + move_hspd, y, obj_semisolid_slope) and !place_meeting(x + sign(move_hspd), y - one_pixel, obj_platform_parent)){
+			y--;
+		}
+	}
+	//Descer a semisolid slope
+	else if(place_meeting(x + move_hspd, y + abs(move_hspd) + one_pixel, obj_platform_parent)){
+		while(!place_meeting(x + move_hspd, y + one_pixel, obj_platform_parent)){
+			y++;
+		}
+	}
+	
 	//Subir a slope
-	if(place_meeting(x + move_hspd, y, obj_slope) and !place_meeting(x + move_hspd, y - abs(move_hspd), obj_ground)){
-		while(place_meeting(x + move_hspd, y, obj_slope) and !place_meeting(x + sign(move_hspd), y - 1, obj_ground)){
+	if(place_meeting(x + move_hspd, y, obj_slope) and !place_meeting(x + move_hspd, y - abs(move_hspd), obj_slope)){
+		while(place_meeting(x + move_hspd, y, obj_slope) and !place_meeting(x + sign(move_hspd), y - one_pixel, obj_ground)){
 			y--;
 		}
 	}
@@ -128,36 +140,41 @@ if(place_meeting(x, y + y_speed, obj_ground)){
 y += y_speed;
 */
 
+
 var clamp_yspeed = max(0, move_vspd);
 var list_inst = ds_list_create();
 var is_ordered = false;
 var list_inst_size = instance_place_list(x, y + 1 + clamp_yspeed + max_grav, list_obj, list_inst, is_ordered);
-//show_debug_message_list(list_inst);
+show_debug_message_list(list_inst);
 for(var i = 0; i < list_inst_size; i++){
 	var inst_obj = list_inst[| i];
 	var inst_name = inst_obj.object_index;
 	var one_pixel = 1;
 	if(move_vspd >= 0){
-		//Quando há colisão com um único objeto, então esse objeto será a floor_plat.
-		if(i + 1 == list_inst_size and i == 0){
-			floor_plat = inst_obj;
-		}
+		//TODO: Não detectar a semisolid slope enquanto estiver dentro dela
 		//Se minha instância é parent da classe slope ou for o slope, verificar se só tenho colisão com essa instância.
-		else if(object_is_ancestor(inst_name, obj_slope) or inst_name == obj_slope){
+		if(object_is_ancestor(inst_name, obj_slope) or inst_name == obj_slope){
 			if(place_meeting(x, y + one_pixel, inst_obj)){
 				var aux_list = ds_list_create();
 				var aux_len = instance_place_list(x, y + one_pixel, list_obj, aux_list, false);
 				if(aux_len == 1){
-					//show_debug_message("estou em alguma slope!!!");
 					floor_plat = inst_obj;
 				}
 				ds_list_destroy(aux_list);
 			}
 		}
+		else if(inst_name == obj_semisolid_slope and bbox_bottom <= inst_obj.bbox_bottom){
+			if(!place_meeting(x, y, obj_semisolid_slope)){
+				floor_plat = inst_obj;
+			}
+		}
+		//Se o personagem está colidindo com um objeto semisolido e está acima dele.
+		else if(inst_name == obj_semisolid and bbox_bottom <= inst_obj.bbox_top){
+			floor_plat = inst_obj;
+		}
 		//Se minha instância é da classe obj_ground.
 		else if(inst_name == obj_ground){
 			if(place_meeting(x, y + one_pixel, inst_obj)){
-				//show_debug_message("estou na obj_ground");
 				floor_plat = inst_obj;
 			}
 		}
