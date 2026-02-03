@@ -1,7 +1,8 @@
-
 // Inputs do teclado
 var right = keyboard_check(ord("D")) or gamepad_button_check(0, gp_padr);
 var left = keyboard_check(ord("A")) or gamepad_button_check(0, gp_padl);
+var up = keyboard_check(ord("W"));
+var down = keyboard_check(ord("S"));
 var jump = keyboard_check(vk_space) or gamepad_button_check(0, gp_face1);
 var jump_pressed = keyboard_check_pressed(vk_space) or gamepad_button_check(0, gp_face1);
 
@@ -61,28 +62,15 @@ if(move_hspd != 0){
 	var pixel_check = sign(move_hspd);
 	var one_pixel = 1;
 	
-	//Subir a semisolid slope
-	if(place_meeting(x + move_hspd, y, obj_semisolid_slope) and !place_meeting(x + move_hspd, y - abs(move_hspd), obj_semisolid_slope)){
-		while(place_meeting(x + move_hspd, y, obj_semisolid_slope) and !place_meeting(x + sign(move_hspd), y - one_pixel, obj_platform_parent)){
-			y--;
-		}
-	}
-	//Descer a semisolid slope
-	else if(place_meeting(x + move_hspd, y + abs(move_hspd) + one_pixel, obj_platform_parent)){
-		while(!place_meeting(x + move_hspd, y + one_pixel, obj_platform_parent)){
-			y++;
-		}
-	}
-	
 	//Subir a slope
-	if(place_meeting(x + move_hspd, y, obj_slope) and !place_meeting(x + move_hspd, y - abs(move_hspd), obj_slope)){
-		while(place_meeting(x + move_hspd, y, obj_slope) and !place_meeting(x + sign(move_hspd), y - one_pixel, obj_ground)){
+	if(place_meeting(x + move_hspd, y, [obj_slope, obj_semisolid_slope]) and !place_meeting(x + move_hspd, y - abs(move_hspd), [obj_slope, obj_semisolid_slope]) and !place_meeting(x, y, obj_semisolid_slope)){
+		while(place_meeting(x + move_hspd, y, [obj_slope, obj_semisolid_slope]) and !place_meeting(x + sign(move_hspd), y - one_pixel, obj_ground)){
 			y--;
 		}
 	}
 	//Descer a slope
-	else if(place_meeting(x + move_hspd, y + abs(move_hspd) + one_pixel, obj_ground)){
-		while(!place_meeting(x + move_hspd, y + one_pixel, obj_ground)){
+	else if(place_meeting(x + move_hspd, y + abs(move_hspd) + one_pixel, obj_platform_parent)){
+		while(!place_meeting(x + move_hspd, y + one_pixel, obj_platform_parent)){
 			y++;
 		}
 	}
