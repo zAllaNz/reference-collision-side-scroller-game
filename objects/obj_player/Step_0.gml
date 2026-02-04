@@ -2,7 +2,7 @@
 var right = keyboard_check(ord("D")) or gamepad_button_check(0, gp_padr);
 var left = keyboard_check(ord("A")) or gamepad_button_check(0, gp_padl);
 var up = keyboard_check(ord("W"));
-var down = keyboard_check(ord("S"));
+var down_pressed = keyboard_check_pressed(ord("S"));
 var jump = keyboard_check(vk_space) or gamepad_button_check(0, gp_face1);
 var jump_pressed = keyboard_check_pressed(vk_space) or gamepad_button_check(0, gp_face1);
 
@@ -15,6 +15,11 @@ move_hspd = x_speed - xrest;
 // TODO: Arrumar o problema de colisão no eixo horizontal causado pelo trecho de código da slope, ele está fazendo o player dar um pulo.
 
 #region // Pulo player --- Fazer uma função no create.
+
+if(down_pressed){
+	floor_plat = noone;
+	y += 1;
+}
 
 // Caso o player pule, terá um tempo para armazenar um próximo input do pulo.
 if(jump_pressed){
@@ -151,11 +156,31 @@ for(var i = 0; i < list_inst_size; i++){
 				ds_list_destroy(aux_list);
 			}
 		}
+		else if((object_is_ancestor(inst_name, obj_semisolid_slope) or inst_name == obj_semisolid_slope)
+		and bbox_bottom <= inst_obj.bbox_bottom){
+			if(place_meeting(x, y + move_vspd, inst_obj) and !place_meeting(x, y, obj_semisolid_slope)){
+				var aux_list = ds_list_create();
+				var aux_len = instance_place_list(x, y + move_vspd, list_obj, aux_list, false);
+				var same_ancestor = true;
+				for(var j = 0; j < aux_len; j++){
+					var aux_obj = aux_list[| j].object_index;
+					if(!object_is_ancestor(aux_obj, obj_semisolid_slope) and aux_obj != obj_semisolid_slope){
+						same_ancestor = false;
+					}
+				}
+				if(same_ancestor){
+					floor_plat = inst_obj;
+				}
+				ds_list_destroy(aux_list);
+			}
+		}
+		/*
 		else if(inst_name == obj_semisolid_slope and bbox_bottom <= inst_obj.bbox_bottom){
 			if(!place_meeting(x, y, obj_semisolid_slope)){
 				floor_plat = inst_obj;
 			}
 		}
+		*/
 		//Se o personagem está colidindo com um objeto semisolido e está acima dele.
 		else if(inst_name == obj_semisolid and bbox_bottom <= inst_obj.bbox_top){
 			floor_plat = inst_obj;
@@ -166,6 +191,7 @@ for(var i = 0; i < list_inst_size; i++){
 				floor_plat = inst_obj;
 			}
 		}
+		//if(instance_exists(floor_plat)){show_message(floor_plat.object_index)}
 	}
 }
 ds_list_destroy(list_inst);
