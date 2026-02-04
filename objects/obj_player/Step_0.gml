@@ -16,7 +16,7 @@ move_hspd = x_speed - xrest;
 
 #region // Pulo player --- Fazer uma função no create.
 
-if(down_pressed){
+if(down_pressed and (floor_plat.object_index == obj_semisolid or object_is_ancestor(floor_plat.object_index, obj_semisolid))){
 	floor_plat = noone;
 	y += 1;
 }
@@ -156,6 +156,7 @@ for(var i = 0; i < list_inst_size; i++){
 				ds_list_destroy(aux_list);
 			}
 		}
+		/*
 		else if((object_is_ancestor(inst_name, obj_semisolid_slope) or inst_name == obj_semisolid_slope)
 		and bbox_bottom <= inst_obj.bbox_bottom){
 			if(place_meeting(x, y + move_vspd, inst_obj) and !place_meeting(x, y, obj_semisolid_slope)){
@@ -174,13 +175,12 @@ for(var i = 0; i < list_inst_size; i++){
 				ds_list_destroy(aux_list);
 			}
 		}
-		/*
+		*/
 		else if(inst_name == obj_semisolid_slope and bbox_bottom <= inst_obj.bbox_bottom){
-			if(!place_meeting(x, y, obj_semisolid_slope)){
+			if(!place_meeting(x, y, obj_semisolid_slope) and !place_meeting(x, y + 1, obj_ground)){
 				floor_plat = inst_obj;
 			}
 		}
-		*/
 		//Se o personagem está colidindo com um objeto semisolido e está acima dele.
 		else if(inst_name == obj_semisolid and bbox_bottom <= inst_obj.bbox_top){
 			floor_plat = inst_obj;
