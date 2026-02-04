@@ -6,8 +6,8 @@
   "name":"obj_semisolid_slope",
   "overriddenProperties":[],
   "parent":{
-    "name":"Slopes",
-    "path":"folders/Objects/Slopes.yy",
+    "name":"Semisolid",
+    "path":"folders/Objects/Platforms/Semisolid.yy",
   },
   "parentObjectId":{
     "name":"obj_semisolid",

@@ -6,8 +6,8 @@
   "name":"obj_semisolid",
   "overriddenProperties":[],
   "parent":{
-    "name":"Platforms",
-    "path":"folders/Objects/Platforms.yy",
+    "name":"Semisolid",
+    "path":"folders/Objects/Platforms/Semisolid.yy",
   },
   "parentObjectId":{
     "name":"obj_platform_parent",

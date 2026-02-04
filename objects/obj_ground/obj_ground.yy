@@ -6,8 +6,8 @@
   "name":"obj_ground",
   "overriddenProperties":[],
   "parent":{
-    "name":"Platforms",
-    "path":"folders/Objects/Platforms.yy",
+    "name":"Solid",
+    "path":"folders/Objects/Platforms/Solid.yy",
   },
   "parentObjectId":{
     "name":"obj_platform_parent",

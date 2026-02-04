@@ -44,8 +44,8 @@
   },
   "origin":0,
   "parent":{
-    "name":"Slopes",
-    "path":"folders/Sprites/Slopes.yy",
+    "name":"Semisolid",
+    "path":"folders/Sprites/Platforms/Semisolid.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

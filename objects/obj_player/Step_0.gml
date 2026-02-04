@@ -16,9 +16,11 @@ move_hspd = x_speed - xrest;
 
 #region // Pulo player --- Fazer uma função no create.
 
-if(down_pressed and (floor_plat.object_index == obj_semisolid or object_is_ancestor(floor_plat.object_index, obj_semisolid))){
-	floor_plat = noone;
-	y += 1;
+if(instance_exists(floor_plat)){
+	if(down_pressed and (floor_plat.object_index == obj_semisolid or object_is_ancestor(floor_plat.object_index, obj_semisolid))){
+		floor_plat = noone;
+		y += 1;
+	}
 }
 
 // Caso o player pule, terá um tempo para armazenar um próximo input do pulo.
@@ -66,10 +68,11 @@ subpixel_accumulator(subpixelx_increment, subpixely_increment);
 if(move_hspd != 0){
 	var pixel_check = sign(move_hspd);
 	var one_pixel = 1;
+	var slopes = [obj_slope, obj_semisolid_slope]
 	
 	//Subir a slope
-	if(place_meeting(x + move_hspd, y, [obj_slope, obj_semisolid_slope]) and !place_meeting(x + move_hspd, y - abs(move_hspd), [obj_slope, obj_semisolid_slope]) and !place_meeting(x, y, obj_semisolid_slope)){
-		while(place_meeting(x + move_hspd, y, [obj_slope, obj_semisolid_slope]) and !place_meeting(x + sign(move_hspd), y - one_pixel, obj_ground)){
+	if(place_meeting(x + move_hspd, y, slopes) and !place_meeting(x + move_hspd, y - abs(move_hspd), slopes) and !place_meeting(x, y, obj_semisolid_slope)){
+		while(place_meeting(x + move_hspd, y, slopes) and !place_meeting(x + sign(move_hspd), y - one_pixel, obj_ground)){
 			y--;
 		}
 	}
@@ -156,28 +159,10 @@ for(var i = 0; i < list_inst_size; i++){
 				ds_list_destroy(aux_list);
 			}
 		}
-		/*
-		else if((object_is_ancestor(inst_name, obj_semisolid_slope) or inst_name == obj_semisolid_slope)
+		//Se o personagem está colidindo com uma slope semisolida.
+		else if((inst_name == obj_semisolid_slope or object_is_ancestor(inst_name, obj_semisolid_slope)) 
 		and bbox_bottom <= inst_obj.bbox_bottom){
-			if(place_meeting(x, y + move_vspd, inst_obj) and !place_meeting(x, y, obj_semisolid_slope)){
-				var aux_list = ds_list_create();
-				var aux_len = instance_place_list(x, y + move_vspd, list_obj, aux_list, false);
-				var same_ancestor = true;
-				for(var j = 0; j < aux_len; j++){
-					var aux_obj = aux_list[| j].object_index;
-					if(!object_is_ancestor(aux_obj, obj_semisolid_slope) and aux_obj != obj_semisolid_slope){
-						same_ancestor = false;
-					}
-				}
-				if(same_ancestor){
-					floor_plat = inst_obj;
-				}
-				ds_list_destroy(aux_list);
-			}
-		}
-		*/
-		else if(inst_name == obj_semisolid_slope and bbox_bottom <= inst_obj.bbox_bottom){
-			if(!place_meeting(x, y, obj_semisolid_slope) and !place_meeting(x, y + 1, obj_ground)){
+			if(!place_meeting(x, y, obj_semisolid_slope) and !place_meeting(x, y + one_pixel, obj_ground)){
 				floor_plat = inst_obj;
 			}
 		}

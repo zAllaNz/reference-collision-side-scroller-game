@@ -6,8 +6,8 @@
   "name":"obj_slope_30",
   "overriddenProperties":[],
   "parent":{
-    "name":"Slopes",
-    "path":"folders/Objects/Slopes.yy",
+    "name":"Solid",
+    "path":"folders/Objects/Platforms/Solid.yy",
   },
   "parentObjectId":{
     "name":"obj_slope",
