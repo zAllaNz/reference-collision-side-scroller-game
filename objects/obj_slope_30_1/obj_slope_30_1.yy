@@ -6,12 +6,12 @@
   "name":"obj_slope_30_1",
   "overriddenProperties":[],
   "parent":{
-    "name":"Slopes",
-    "path":"folders/Objects/Slopes.yy",
+    "name":"Solid",
+    "path":"folders/Objects/Platforms/Solid.yy",
   },
   "parentObjectId":{
-    "name":"obj_ground",
-    "path":"objects/obj_ground/obj_ground.yy",
+    "name":"obj_slope",
+    "path":"objects/obj_slope/obj_slope.yy",
   },
   "persistent":false,
   "physicsAngularDamping":0.1,
