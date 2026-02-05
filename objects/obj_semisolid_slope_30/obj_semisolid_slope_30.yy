@@ -34,9 +34,6 @@
     "name":"spr_semisolid_slope_30",
     "path":"sprites/spr_semisolid_slope_30/spr_semisolid_slope_30.yy",
   },
-  "spriteMaskId":{
-    "name":"spr_semisolid_slope_30",
-    "path":"sprites/spr_semisolid_slope_30/spr_semisolid_slope_30.yy",
-  },
+  "spriteMaskId":null,
   "visible":true,
 }

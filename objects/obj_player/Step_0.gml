@@ -139,7 +139,7 @@ y += y_speed;
 
 var clamp_yspeed = max(0, move_vspd);
 var list_inst = ds_list_create();
-var is_ordered = false;
+var is_ordered = true;
 var list_inst_size = instance_place_list(x, y + 1 + clamp_yspeed + max_grav, list_obj, list_inst, is_ordered);
 show_debug_message_list(list_inst);
 for(var i = 0; i < list_inst_size; i++){
@@ -176,7 +176,7 @@ for(var i = 0; i < list_inst_size; i++){
 				floor_plat = inst_obj;
 			}
 		}
-		//if(instance_exists(floor_plat)){show_message(floor_plat.object_index)}
+		//if(instance_exists(floor_plat)){show_message(floor_plat)}
 	}
 }
 ds_list_destroy(list_inst);
