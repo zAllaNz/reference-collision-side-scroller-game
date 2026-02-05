@@ -12,7 +12,6 @@ x_speed = move_direction * move_speed;
 var xrest = frac(x_speed);
 var subpixelx_increment = abs(xrest);
 move_hspd = x_speed - xrest;
-// TODO: Arrumar o problema de colisão no eixo horizontal causado pelo trecho de código da slope, ele está fazendo o player dar um pulo.
 
 #region // Pulo player --- Fazer uma função no create.
 
@@ -92,51 +91,6 @@ if(move_hspd != 0){
 }
 x += move_hspd;
 
-//Colisão horizontal antiga
-/*
-if(place_meeting(x + x_speed, y, obj_ground)) {
-	var pixel_check = sub_pixel * sign(x_speed);
-	// Caso esteja colidindo com um slope
-	if(!place_meeting(x + x_speed, y - abs(x_speed) - 1, obj_ground)){
-		var y_increment = 1;
-		while(place_meeting(x + x_speed, y, obj_ground)){
-			y -= y_increment;
-		}
-	}
-	else{
-		while(!place_meeting(x + pixel_check, y, obj_ground)){
-			x += pixel_check;
-		}
-		x_speed = 0;
-	}
-}
-
-if(!place_meeting(x + x_speed, y + 1, obj_ground) and 
-	place_meeting(x + x_speed, y + abs(x_speed) + 1, obj_ground) and y_speed >= 0){
-	var i = 0;
-	x = floor(x);
-	x_speed = floor(x_speed);
-	while(!place_meeting(x + x_speed, y + 1, obj_ground)){
-		y += 1;
-	}
-}
-x += x_speed;
-*/
-
-// COLISÃO VERTICAL
-/*
-if(place_meeting(x, y + y_speed, obj_ground)){
-	var pixel_check = 1 * sign(y_speed);
-	while(!place_meeting(x, y + pixel_check, obj_ground)){
-		y += pixel_check;
-	}
-	y = round(y);
-	y_speed = 0;
-}
-y += y_speed;
-*/
-
-
 var clamp_yspeed = max(0, move_vspd);
 var list_inst = ds_list_create();
 var is_ordered = true;
@@ -147,7 +101,8 @@ for(var i = 0; i < list_inst_size; i++){
 	var inst_name = inst_obj.object_index;
 	var one_pixel = 1;
 	if(move_vspd >= 0){
-		//TODO: Não detectar a semisolid slope enquanto estiver dentro dela
+		//TODO: Refatorar todo o sistema de collision detector.
+		
 		//Se minha instância é parent da classe slope ou for o slope, verificar se só tenho colisão com essa instância.
 		if(object_is_ancestor(inst_name, obj_slope) or inst_name == obj_slope){
 			if(place_meeting(x, y + one_pixel, inst_obj)){
