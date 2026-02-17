@@ -76,8 +76,8 @@ if(move_hspd != 0){
 		}
 	}
 	//Descer a slope
-	else if(place_meeting(x + move_hspd, y + abs(move_hspd) + one_pixel, obj_platform_parent)){
-		while(!place_meeting(x + move_hspd, y + one_pixel, obj_platform_parent)){
+	else if(place_meeting(x + move_hspd, y + abs(move_hspd) + one_pixel, obj_ground)){
+		while(!place_meeting(x + move_hspd, y + one_pixel, obj_ground)){
 			y++;
 		}
 	}

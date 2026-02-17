@@ -1,19 +1,20 @@
 {
   "$GMObject":"",
-  "%Name":"obj_platform_parent",
+  "%Name":"obj_semisolid_moving",
   "eventList":[
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_platform_parent",
+  "name":"obj_semisolid_moving",
   "overriddenProperties":[],
   "parent":{
-    "name":"Platforms",
-    "path":"folders/Objects/Platforms.yy",
+    "name":"Semisolid",
+    "path":"folders/Objects/Platforms/Semisolid.yy",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"obj_semisolid",
+    "path":"objects/obj_semisolid/obj_semisolid.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
@@ -31,7 +32,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"spr_semisolid_moving",
+    "path":"sprites/spr_semisolid_moving/spr_semisolid_moving.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

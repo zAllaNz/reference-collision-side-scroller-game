@@ -10,7 +10,7 @@ x_speed = 0;
 y_speed = 0;
 
 // Variáveis de gravidade
-grav = 0.275;
+grav = 0.175;
 max_grav = 8;
 on_ground = false;
 
