@@ -95,7 +95,7 @@ var clamp_yspeed = max(0, move_vspd);
 var list_inst = ds_list_create();
 var is_ordered = true;
 var list_inst_size = instance_place_list(x, y + 1 + clamp_yspeed + max_grav, list_obj, list_inst, is_ordered);
-show_debug_message_list(list_inst);
+//show_debug_message_list(list_inst);
 for(var i = 0; i < list_inst_size; i++){
 	var inst_obj = list_inst[| i];
 	var inst_name = inst_obj.object_index;
@@ -123,6 +123,10 @@ for(var i = 0; i < list_inst_size; i++){
 		}
 		//Se o personagem está colidindo com um objeto semisolido e está acima dele.
 		else if(inst_name == obj_semisolid and bbox_bottom <= inst_obj.bbox_top){
+			floor_plat = inst_obj;
+		}
+		//Se o personagem está colidindo com um objeto semisolido e está acima dele.
+		else if(inst_name == obj_semisolid_moving and bbox_bottom <= inst_obj.bbox_top){
 			floor_plat = inst_obj;
 		}
 		//Se minha instância é da classe obj_ground.
