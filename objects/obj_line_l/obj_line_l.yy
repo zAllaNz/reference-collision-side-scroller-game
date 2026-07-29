@@ -1,11 +1,11 @@
 {
   "$GMObject":"",
-  "%Name":"obj_line_1",
+  "%Name":"obj_line_l",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_line_1",
+  "name":"obj_line_l",
   "overriddenProperties":[],
   "parent":{
     "name":"Path",
@@ -33,8 +33,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_line",
-    "path":"sprites/spr_line/spr_line.yy",
+    "name":"spr_line_l",
+    "path":"sprites/spr_line_l/spr_line_l.yy",
   },
   "spriteMaskId":null,
   "visible":true,

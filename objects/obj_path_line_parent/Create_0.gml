@@ -1,9 +1,7 @@
 my_path = path_add();
 
 function set_path(new_path){
-	var default_speed = 100;
-	path_add_point(new_path, x, y, default_speed);
-	path_add_point(new_path, x + sprite_width, y, default_speed);
+	return
 }
 
 function get_path_lenght(){
