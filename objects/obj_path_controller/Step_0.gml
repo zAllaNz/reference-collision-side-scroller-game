@@ -1,0 +1,1 @@
+show_debug_message(obj_path_line_parent.object_index);
