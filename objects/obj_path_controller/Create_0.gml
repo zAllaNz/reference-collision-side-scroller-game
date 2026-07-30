@@ -11,9 +11,9 @@ for(var i = 0; i < path_list_size; i++){
 		if(i == j){
 			continue;
 		}
-		show_message(string(inst_a) + " - " + string(ax) + ";" + string(ay) + " --- " + string(inst_b) + " - " + string(bx) + ";" + string(by));
 		if(path_point_adjacent(inst_path_a, inst_path_b)){
-			show_message("somos adjacentes!");
+			//show_message("somos adjacentes!" + " : " + string(inst_a.object_index) + " - " + string(inst_b.object_index));
+			
 		}
 	}
 }
