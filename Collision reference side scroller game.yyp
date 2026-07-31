@@ -71,6 +71,7 @@
     {"id":{"name":"obj_slope2","path":"objects/obj_slope2/obj_slope2.yy",},},
     {"id":{"name":"obj_slope3","path":"objects/obj_slope3/obj_slope3.yy",},},
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+    {"id":{"name":"scr_debug_message","path":"scripts/scr_debug_message/scr_debug_message.yy",},},
     {"id":{"name":"spr_diag_br","path":"sprites/spr_diag_br/spr_diag_br.yy",},},
     {"id":{"name":"spr_ground","path":"sprites/spr_ground/spr_ground.yy",},},
     {"id":{"name":"spr_line_d","path":"sprites/spr_line_d/spr_line_d.yy",},},
