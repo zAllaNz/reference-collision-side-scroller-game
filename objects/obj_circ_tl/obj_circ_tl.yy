@@ -1,11 +1,11 @@
 {
   "$GMObject":"",
-  "%Name":"obj_line_r",
+  "%Name":"obj_circ_tl",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_line_r",
+  "name":"obj_circ_tl",
   "overriddenProperties":[],
   "parent":{
     "name":"Path",
@@ -33,8 +33,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_line_r",
-    "path":"sprites/spr_line_r/spr_line_r.yy",
+    "name":"spr_circ_tl",
+    "path":"sprites/spr_circ_tl/spr_circ_tl.yy",
   },
   "spriteMaskId":null,
   "visible":true,

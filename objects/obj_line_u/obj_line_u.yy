@@ -37,5 +37,5 @@
     "path":"sprites/spr_line_u/spr_line_u.yy",
   },
   "spriteMaskId":null,
-  "visible":false,
+  "visible":true,
 }

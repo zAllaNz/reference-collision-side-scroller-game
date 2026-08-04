@@ -1,11 +1,11 @@
 {
   "$GMObject":"",
-  "%Name":"obj_line_br",
+  "%Name":"obj_diag_br",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_line_br",
+  "name":"obj_diag_br",
   "overriddenProperties":[],
   "parent":{
     "name":"Path",
@@ -37,5 +37,5 @@
     "path":"sprites/spr_diag_br/spr_diag_br.yy",
   },
   "spriteMaskId":null,
-  "visible":false,
+  "visible":true,
 }

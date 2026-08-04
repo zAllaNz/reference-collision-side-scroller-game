@@ -4,6 +4,7 @@ path_adjacents = [];
 path_adjacents = path_list_adjacent(path_adjacents, path_list);
 group = []
 group = group_path_adjacencies(path_adjacents);
+show_debug_message(group);
 list_group_path = ds_list_create();
 list_group_path = transform_path(group);
 show_debug_message_dslist(list_group_path);
@@ -130,10 +131,12 @@ function transform_path(ref_group){
 	for(var i = 0; i < ref_group_size; i++){
 		var list_group_size = array_length(ref_group[i]);
 		var _path = path_add();
+		path_set_kind(_path, 1);
 		for(var j = 0; j < list_group_size; j++){
 			var path_i = ref_group[i][j].get_path_id()
 			path_append(_path, path_i);
 		}
+		path_set_closed(_path, false);
 		ds_list_add(group_path, _path);
 	}
 	return group_path
