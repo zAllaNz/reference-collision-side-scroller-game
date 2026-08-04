@@ -2,10 +2,11 @@ path_list = ds_list_create();
 append_all_paths(path_list);
 path_adjacents = [];
 path_adjacents = path_list_adjacent(path_adjacents, path_list);
-//show_debug_message(path_adjacents);
 group = []
 group = group_path_adjacencies(path_adjacents);
-
+list_group_path = ds_list_create();
+list_group_path = transform_path(group);
+//show_debug_message_dslist(list_group_path);
 
 function append_all_paths(path_list){
 	// A ordem de criação dos objetos line importam, sempre checar isso.
@@ -67,7 +68,7 @@ function group_path_adjacencies(adjacency_list) {
     var visited  = ds_map_create();
 
     var n = array_length(adjacency_list);
-    for (var i = 0; i < _n; i++) {
+    for (var i = 0; i < n; i++) {
         var pair = adjacency_list[i];
         var inst = pair[0];
         var adj  = pair[1];
@@ -80,7 +81,7 @@ function group_path_adjacencies(adjacency_list) {
     }
 
     var groups = [];
-    for (var i = 0; i < _n; i++) {
+    for (var i = 0; i < n; i++) {
         var inst = adjacency_list[i][0];
 
         if (ds_map_exists(is_next, inst)) continue;
@@ -97,7 +98,7 @@ function group_path_adjacencies(adjacency_list) {
         array_push(groups, chain);
     }
 
-    for (var i = 0; i < _n; i++) {
+    for (var i = 0; i < n; i++) {
         var inst = adjacency_list[i][0];
 
         if (ds_map_exists(visited, inst)) continue;
@@ -120,4 +121,19 @@ function group_path_adjacencies(adjacency_list) {
     ds_map_destroy(visited);
 
     return groups;
+}
+
+function transform_path(ref_group){
+	var group_path = ds_list_create();
+	var ref_group_size = array_length(ref_group);
+	for(var i = 0; i < ref_group_size; i++){
+		var list_group_size = array_length(ref_group[i]);
+		var _path = path_add();
+		for(var j = 0; j < list_group_size; j++){
+			var path_i = ref_group[i][j].get_path_id()
+			path_append(_path, path_i);
+		}
+		ds_list_add(group_path, _path);
+	}
+	return group_path
 }
