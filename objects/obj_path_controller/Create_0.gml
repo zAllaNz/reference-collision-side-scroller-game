@@ -6,7 +6,7 @@ group = []
 group = group_path_adjacencies(path_adjacents);
 list_group_path = ds_list_create();
 list_group_path = transform_path(group);
-//show_debug_message_dslist(list_group_path);
+show_debug_message_dslist(list_group_path);
 
 function append_all_paths(path_list){
 	// A ordem de criação dos objetos line importam, sempre checar isso.
@@ -16,33 +16,34 @@ function append_all_paths(path_list){
 }
 	
 function path_list_adjacent(path_matrix, path_list){
-	var path_i = 0;
-	var path_list_size = ds_list_size(path_list);
-	for(var i = 0; i < path_list_size; i++){
-		var inst_a = path_list[| i];
-		var inst_path_a = inst_a.get_path_id();
-		for(var j = 0; j < path_list_size; j++){
-			var inst_b = path_list[| j];
-			var inst_path_b = inst_b.get_path_id();
-			//show_debug_message("iteração do j " + string(j));
-			if(i == j){
-				continue;
-			}
-			if(path_point_adjacent(inst_path_a, inst_path_b)){
-				path_matrix[path_i, 0] = inst_a;
-				path_matrix[path_i, 1] = inst_b;
-				path_i++;
-				break;
-			}
-			if(j == path_list_size - 1){
-				path_matrix[path_i, 0] = inst_a;
-				path_matrix[path_i, 1] = noone;
-				path_i++;
-			}
-		}
-	}
-	ds_list_destroy(path_list);
-	return path_matrix
+    var path_i = 0;
+    var path_list_size = ds_list_size(path_list);
+    for(var i = 0; i < path_list_size; i++){
+        var inst_a = path_list[| i];
+        var inst_path_a = inst_a.get_path_id();
+        var found = false;
+
+        for(var j = 0; j < path_list_size; j++){
+            if(i == j) continue;
+            var inst_b = path_list[| j];
+            var inst_path_b = inst_b.get_path_id();
+            if(path_point_adjacent(inst_path_a, inst_path_b)){
+                path_matrix[path_i, 0] = inst_a;
+                path_matrix[path_i, 1] = inst_b;
+                path_i++;
+                found = true;
+                break;
+            }
+        }
+
+        if(!found){
+            path_matrix[path_i, 0] = inst_a;
+            path_matrix[path_i, 1] = noone;
+            path_i++;
+        }
+    }
+    ds_list_destroy(path_list);
+    return path_matrix;
 }
 
 function path_point_adjacent(path_a, path_b){
@@ -136,4 +137,23 @@ function transform_path(ref_group){
 		ds_list_add(group_path, _path);
 	}
 	return group_path
+}
+	
+function get_closest_path(object){
+	var x_obj = object.x;
+	var y_obj = object.y;
+	var size = ds_list_size(list_group_path);
+	var tol = 8;
+	for(var i = 0; i < size; i++){
+		var _path = list_group_path[| i];
+		var len_points = path_get_number(_path);
+		for(var j = 0; j < len_points; j++){
+			var x_point = path_get_point_x(_path, j);
+			var y_point = path_get_point_y(_path, j);
+			if(point_distance(x_obj, y_obj, x_point, y_point) <= tol){
+				return _path;
+			}
+		}
+	}
+	return noone;
 }

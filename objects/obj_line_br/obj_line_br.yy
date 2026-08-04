@@ -37,5 +37,5 @@
     "path":"sprites/spr_diag_br/spr_diag_br.yy",
   },
   "spriteMaskId":null,
-  "visible":true,
+  "visible":false,
 }
