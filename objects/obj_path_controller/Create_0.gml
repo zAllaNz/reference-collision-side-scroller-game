@@ -2,8 +2,9 @@ path_list = ds_list_create();
 append_all_paths(path_list);
 path_adjacents = [];
 path_adjacents = path_list_adjacent(path_adjacents, path_list);
-
-
+//show_debug_message(path_adjacents);
+group = []
+group = group_path_adjacencies(path_adjacents);
 
 
 function append_all_paths(path_list){
@@ -22,7 +23,7 @@ function path_list_adjacent(path_matrix, path_list){
 		for(var j = 0; j < path_list_size; j++){
 			var inst_b = path_list[| j];
 			var inst_path_b = inst_b.get_path_id();
-			show_debug_message("iteração do j " + string(j));
+			//show_debug_message("iteração do j " + string(j));
 			if(i == j){
 				continue;
 			}
@@ -55,4 +56,68 @@ function path_point_adjacent(path_a, path_b){
 		return true;
 	}
 	return false
+}
+
+/// @function group_path_adjacencies(adjacency_list)
+/// @param {Array} adjacency_list  array de pares [instancia, proximo_ou_-4]
+/// @return {Array} array de arrays, cada um representando um grupo de paths adjacentes
+function group_path_adjacencies(adjacency_list) {
+    var next_map = ds_map_create();
+    var is_next  = ds_map_create();
+    var visited  = ds_map_create();
+
+    var n = array_length(adjacency_list);
+    for (var i = 0; i < _n; i++) {
+        var pair = adjacency_list[i];
+        var inst = pair[0];
+        var adj  = pair[1];
+
+        ds_map_add(next_map, inst, adj);
+
+        if (adj != -4) {
+            ds_map_add(is_next, adj, true);
+        }
+    }
+
+    var groups = [];
+    for (var i = 0; i < _n; i++) {
+        var inst = adjacency_list[i][0];
+
+        if (ds_map_exists(is_next, inst)) continue;
+        if (ds_map_exists(visited, inst)) continue;
+
+        var chain = [];
+        var current = inst;
+        while (current != -4) {
+            array_push(chain, current);
+            ds_map_set(visited, current, true);
+            current = ds_map_find_value(next_map, current);
+        }
+
+        array_push(groups, chain);
+    }
+
+    for (var i = 0; i < _n; i++) {
+        var inst = adjacency_list[i][0];
+
+        if (ds_map_exists(visited, inst)) continue;
+
+        var chain = [];
+        var current = inst;
+        var start = inst;
+
+        do {
+            array_push(chain, current);
+            ds_map_set(visited, current, true);
+            current = ds_map_find_value(next_map, current);
+        } until (current == start || current == -4);
+
+        array_push(groups, chain);
+    }
+
+    ds_map_destroy(next_map);
+    ds_map_destroy(is_next);
+    ds_map_destroy(visited);
+
+    return groups;
 }
