@@ -4,7 +4,6 @@ path_adjacents = [];
 path_adjacents = path_list_adjacent(path_adjacents, path_list);
 group = []
 group = group_path_adjacencies(path_adjacents);
-show_debug_message(group);
 list_group_path = ds_list_create();
 list_group_path = transform_path(group);
 show_debug_message_dslist(list_group_path);
@@ -129,15 +128,26 @@ function transform_path(ref_group){
 	var group_path = ds_list_create();
 	var ref_group_size = array_length(ref_group);
 	for(var i = 0; i < ref_group_size; i++){
+		var path_var = noone;
 		var list_group_size = array_length(ref_group[i]);
-		var _path = path_add();
-		path_set_kind(_path, 1);
-		for(var j = 0; j < list_group_size; j++){
-			var path_i = ref_group[i][j].get_path_id()
-			path_append(_path, path_i);
+		if(list_group_size != 1){
+			var _path = path_add();
+			var is_smooth = true;
+			var is_closed = false;
+			path_set_kind(_path, is_smooth);
+			for(var j = 0; j < list_group_size; j++){
+				var path_i = ref_group[i][j].get_path_id()
+				path_append(_path, path_i);
+			}
+			path_set_closed(_path, is_closed);
+			var path_ref = _path;
+			path_var = create_new_path_var(path_ref);
 		}
-		path_set_closed(_path, false);
-		ds_list_add(group_path, _path);
+		else{
+			var path_ref = ref_group[i][0];
+			path_var = create_new_path_var(path_ref);
+		}
+		ds_list_add(group_path, path_var);
 	}
 	return group_path
 }
@@ -146,13 +156,13 @@ function get_closest_path(object){
 	var x_obj = object.x;
 	var y_obj = object.y;
 	var size = ds_list_size(list_group_path);
-	var tol = 8;
+	var tol = 32;
 	for(var i = 0; i < size; i++){
 		var _path = list_group_path[| i];
-		var len_points = path_get_number(_path);
+		var len_points = _path.get_path_var_number();
 		for(var j = 0; j < len_points; j++){
-			var x_point = path_get_point_x(_path, j);
-			var y_point = path_get_point_y(_path, j);
+			var x_point = _path.get_path_var_point_x(j);
+			var y_point = _path.get_path_var_point_y(j);
 			if(point_distance(x_obj, y_obj, x_point, y_point) <= tol){
 				return _path;
 			}
